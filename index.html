@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07100f">
+  <meta name="description" content="OptiSpray by AeroGuard — explore spray-drift physics, research evidence and a retrofit approach for agricultural drone teams.">
+  <meta property="og:title" content="OptiSpray — Precision in Every Drop">
+  <meta property="og:description" content="Local sensing. Transparent physics. A retrofit approach to spray-drift management. Discover the AeroGuard research prototype.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <title>OptiSpray — Precision in Every Drop</title>
+</head>
+<body>
+<a class="skip-link" href="#home">Skip to the experience</a>
+  <div id="scene-container" aria-hidden="true"></div>
+  <div id="fallback" aria-hidden="true">
+    <div class="fallback-grid"></div>
+    <div class="fallback-drone"><i></i><i></i><b></b><i></i><i></i></div>
+    <span>INITIALIZING DIGITAL FIELD</span>
+  </div>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#home" data-scroll-to="0" aria-label="OptiSpray home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>OptiSpray</span>
+    </a>
+    <nav class="main-nav" aria-label="Experience chapters">
+      <button class="nav-link active" data-scroll-to="0"><span>01</span> Home</button>
+      <button class="nav-link" data-scroll-to="1"><span>02</span> Physics</button>
+      <button class="nav-link" data-scroll-to="2"><span>03</span> Wind</button>
+      <button class="nav-link" data-scroll-to="3"><span>04</span> Mapping</button>
+      <button class="nav-link" data-scroll-to="4"><span>05</span> Engineering</button>
+      <button class="nav-link" data-scroll-to="5"><span>06</span> Lab</button>
+    </nav>
+    <div class="header-actions">
+      <button class="research-entry" data-research="evidence">RESEARCH ↗</button><span class="system-status"><i></i> RESEARCH PROTOTYPE</span>
+      <button id="motion-toggle" class="text-button" aria-pressed="false" title="Pause ambient motion">MOTION ON</button>
+    </div>
+    <div class="scroll-progress" aria-hidden="true"><i id="scroll-progress-bar"></i></div>
+  </header>
+
+  <main id="experience">
+    <section class="chapter active" id="home" data-chapter="0" aria-label="Home">
+      <div class="chapter-layout">
+        <div class="chapter-copy hero-copy">
+          <p class="eyebrow"><span>01 / HOME</span> AERIAL INTELLIGENCE</p>
+          <h1>PRECISION<br><strong>IN EVERY DROP</strong></h1>
+          <p class="lede">Know where the spray goes. Local wind sensing, deposition modelling and retrofit guidance — developed for the aircraft you already operate.</p>
+          <div class="cta-row">
+            <button class="button primary" data-scroll-to="5">ENTER SIMULATION <span>↗</span></button>
+            <button class="button ghost" data-scroll-to="1">EXPLORE THE PHYSICS <span>↓</span></button>
+          </div>
+          <dl class="hero-metrics">
+            <div><dt>DEVELOPED</dt><dd>Bench prototype</dd></div>
+            <div><dt>TESTED</dt><dd>5 nozzle conditions</dd></div>
+            <div><dt>NEXT</dt><dd>Aircraft validation</dd></div>
+          </dl>
+        </div>
+        <aside class="flight-tag hud-panel">
+          <div class="hud-heading"><span>ILLUSTRATIVE AIRCRAFT</span><i>DEMO</i></div>
+          <div class="flight-line"><span>ALTITUDE</span><b><span data-value="height">3.0</span> m</b></div>
+          <div class="flight-line"><span>WIND</span><b><span data-value="wind">2.4</span> m/s</b></div>
+          <div class="flight-line"><span>FLOW</span><b><span data-value="flow">1.8</span> L/min</b></div>
+          <div class="signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p>PARAMETER-DRIVEN PREVIEW</p>
+        </aside>
+        <div class="coordinate-tag">AEROGUARD / TEAM 田瞳<br>CONRAD CHALLENGE · ENERGY & ENVIRONMENT</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="physics" data-chapter="1" aria-label="Physics engine" inert>
+      <div class="chapter-layout">
+        <div class="chapter-copy">
+          <p class="eyebrow"><span>02 / PHYSICS ENGINE</span> MICRO SCALE</p>
+          <h2>UNDERSTAND<br><strong>EVERY DROP</strong></h2>
+          <p class="lede">Small droplets. Longer exposure. Explore how gravity and air resistance turn wind into displacement — and why droplet count is not chemical dose.</p>
+          <div class="process-chain" aria-label="Physics process">
+            <span>RELEASE</span><i></i><span>DRAG</span><i></i><span>DRIFT</span><i></i><span>DEPOSIT</span>
+          </div>
+          <button class="button ghost compact" data-scroll-to="2">FOLLOW THE AIRFLOW <span>↓</span></button>
+        </div>
+        <aside class="physics-readout hud-panel interactive-panel">
+          <div class="hud-heading"><span>TRAJECTORY / TEACHING MODEL</span><i>SI UNITS</i></div>
+          <div class="formula">m dv/dt = mg + F<sub>drag</sub></div>
+          <canvas data-chart="trajectory" aria-label="Droplet height versus downwind displacement for three size classes" role="img"></canvas>
+          <div class="size-legend"><span>● 0.7D</span><span>● D</span><span>● 1.3D</span></div>
+          <label class="control-row"><span>REFERENCE DIAMETER <b><output data-value="size">220</output> μm</b></span><input type="range" min="100" max="400" step="10" value="220" data-param="size" aria-label="Physics reference diameter"></label>
+          <div class="flight-line"><span>MASS-WEIGHTED AIRTIME</span><b><span data-metric="flightTime">—</span> s</b></div>
+          <button class="inline-link" data-research="model">Equations & assumptions ↗</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="chapter" id="wind" data-chapter="2" aria-label="Wind intelligence" inert>
+      <div class="chapter-layout">
+        <div class="chapter-copy">
+          <p class="eyebrow"><span>03 / WIND INTELLIGENCE</span> SENSE. INTERPRET. RESPOND.</p>
+          <h2>PREDICT<br><strong>THE INVISIBLE</strong></h2>
+          <p class="lede">Ultrasonic sensing connects to an ESP32 over RS485. The bench prototype flags stale readings and stops the pump after a three-second communication interruption.</p>
+          <div class="wind-legend"><span><i class="cyan"></i> ILLUSTRATIVE AIRFLOW</span><span><i class="orange"></i> DROPLET RESPONSE</span></div>
+        </div>
+        <aside class="wind-console hud-panel interactive-panel">
+          <div class="hud-heading"><span>WIND FIELD CONTROL</span><i>DEMO</i></div>
+          <label class="control-row">
+            <span>WIND SPEED <b><output data-value="wind">2.4</output> m/s</b></span>
+            <input type="range" min="0" max="8" step="0.1" value="2.4" data-param="wind" aria-label="Wind speed">
+          </label>
+          <label class="control-row">
+            <span>FLIGHT HEIGHT <b><output data-value="height">3.0</output> m</b></span>
+            <input type="range" min="1.5" max="6" step="0.1" value="3" data-param="height" aria-label="Flight height">
+          </label>
+          <div class="direction-control">
+            <span>WIND TRAVELS TOWARD</span>
+            <div class="segmented" role="group" aria-label="Wind direction">
+              <button data-direction="0">N</button><button data-direction="90" class="selected">E</button><button data-direction="180">S</button><button data-direction="270">W</button>
+            </div>
+          </div>
+          <div class="wind-impact"><span>MODEL MEAN DRIFT</span><strong><span data-metric="drift">—</span> m</strong><i id="drift-bar"></i></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="chapter" id="mapping" data-chapter="3" aria-label="Precision mapping" inert>
+      <div class="chapter-layout">
+        <div class="chapter-copy mapping-copy">
+          <p class="eyebrow"><span>04 / PRECISION MAPPING</span> DEPOSITION TWIN</p>
+          <h2>MAP EVERY<br><strong>PARTICLE</strong></h2>
+          <p class="lede">The same trajectories become a mass-weighted deposition grid. Compare an unchanged route with a mean-drift upwind shift. Check distribution as well as retention.</p>
+          <div class="map-legend" aria-label="Deposition legend">
+            <span>LOW</span><i></i><span>RELATIVE CELL MASS</span><i></i><span>HIGH</span>
+          </div>
+          <div class="segmented compare-toggle" role="group" aria-label="Spray comparison">
+            <button data-mode="standard" class="selected">BASELINE</button>
+            <button data-mode="optimized">UPWIND SHIFT</button>
+          </div>
+        </div>
+        <aside class="map-readout">
+          <span>IN-FIELD MASS</span>
+          <strong><span data-metric="inside">—</span><small>%</small></strong>
+          <p><i></i> BROWSER MODEL · NOT FIELD DATA</p>
+        </aside>
+        <div class="map-caption hud-panel"><span>DEMO FIELD</span><span>CELLS 1 × 1 m</span><span>36 × 28 m</span></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="engineering" data-chapter="4" aria-label="Engineering" inert>
+      <div class="chapter-layout">
+        <div class="chapter-copy engineering-copy">
+          <p class="eyebrow"><span>05 / ENGINEERING</span> MODULAR BY DESIGN</p>
+          <h2>BUILT TO<br><strong>INTEGRATE</strong></h2>
+          <p class="lede retrofit">RETROFIT, <strong>NOT REPLACE.</strong></p>
+          <p class="lede small">A working wind-sensing and pump-control bench prototype. An external guidance attachment in development. Explore the architecture and its current readiness.</p>
+          <p class="drag-hint">DRAG THE AIRCRAFT TO ROTATE · SELECT A MODULE TO FOCUS</p>
+        </div>
+        <aside class="parts-panel interactive-panel">
+          <div class="hud-heading"><span>SYSTEM ARCHITECTURE</span><i>CONCEPT ASSEMBLY</i></div>
+          <div class="part-list" role="group" aria-label="Aircraft modules">
+            <button data-part="sensor" class="selected"><span>01</span><b>Wind sensing</b><i>↗</i></button>
+            <button data-part="control"><span>02</span><b>Guidance control</b><i>↗</i></button>
+            <button data-part="boom"><span>03</span><b>Spray boom</b><i>↗</i></button>
+            <button data-part="nozzle"><span>04</span><b>Nozzle array</b><i>↗</i></button>
+            <button data-part="tank"><span>05</span><b>Liquid system</b><i>↗</i></button>
+            <button data-part="interface"><span>06</span><b>Data interface</b><i>↗</i></button>
+          </div>
+          <div class="part-detail" aria-live="polite">
+            <span id="part-code">WS–01 / WIND SENSING</span>
+            <p id="part-description">Built: ultrasonic wind sensing, RS485 communication and ESP32 control. Airborne sensor placement and calibration are next.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="chapter" id="lab" data-chapter="5" aria-label="Simulation lab" inert>
+      <div class="chapter-layout lab-layout">
+        <div class="lab-title">
+          <p class="eyebrow"><span>06 / SIMULATION LAB</span> EXPLORE THE TRADE-OFFS</p>
+          <h2>CHANGE A VARIABLE.<br><strong>SEE THE PHYSICS.</strong></h2>
+          <p>Trajectories. Deposits. One transparent teaching model.</p>
+        </div>
+        <div class="mission-status hud-panel">
+          <span><i></i> ILLUSTRATIVE ROUTE REPLAY</span>
+          <dl><div><dt>PATH</dt><dd id="path-label">SERPENTINE</dd></div><div><dt>MODEL</dt><dd>FREE-SETTLING DEMO</dd></div></dl>
+        </div>
+        <aside class="lab-console interactive-panel">
+          <div class="console-header"><div><span>OPTISPRAY / LAB</span><b>MODEL PARAMETERS</b></div><i>DEMO / 01</i></div>
+          <div class="console-controls">
+            <label class="control-row"><span>WIND SPEED <b><output data-value="wind">2.4</output> m/s</b></span><input type="range" min="0" max="8" step="0.1" value="2.4" data-param="wind" aria-label="Lab wind speed"></label>
+            <label class="control-row"><span>FLIGHT HEIGHT <b><output data-value="height">3.0</output> m</b></span><input type="range" min="1.5" max="6" step="0.1" value="3" data-param="height" aria-label="Lab flight height"></label>
+            <label class="control-row"><span>SPRAY FLOW <b><output data-value="flow">1.8</output> L/min</b></span><input type="range" min="0.8" max="3" step="0.1" value="1.8" data-param="flow" aria-label="Spray flow"></label>
+            <label class="control-row"><span>REFERENCE DIAMETER <b><output data-value="size">220</output> μm</b></span><input type="range" min="100" max="400" step="10" value="220" data-param="size" aria-label="Droplet size"></label>
+          </div>
+          <label class="control-row direction-slider"><span>WIND TOWARD <b><output data-value="direction">90</output>°</b></span><input type="range" min="0" max="360" step="15" value="90" data-param="direction" aria-label="Lab wind travel direction"></label>
+          <div class="path-control"><span>FLIGHT PATH</span><div class="segmented" role="group" aria-label="Flight path"><button data-path="single">SINGLE</button><button data-path="serpentine" class="selected">SERPENTINE</button><button data-path="perimeter">PERIMETER</button></div></div>
+          <div class="simulation-metrics">
+            <div><span>IN-FIELD MASS</span><strong><span data-metric="inside">—</span>%</strong><small>DEMO RECTANGLE</small></div>
+            <div><span>MEAN DRIFT</span><strong><span data-metric="drift">—</span> m</strong><small>DOWNWIND</small></div>
+            <div><span>DEPOSITION CV</span><strong><span data-metric="cv">—</span>%</strong><small>LOWER = MORE EVEN</small></div>
+          </div>
+          <div class="dose-line"><span>MODEL WATER DOSE</span><b><span data-metric="doseKg">—</span> kg</b></div><div class="mass-chart"><span>MASS BY EAST–WEST POSITION</span><canvas data-chart="deposition" role="img" aria-label="Mass fraction deposited in each east west grid column"></canvas></div>
+          <p class="comparison-result" id="comparison-result" aria-live="polite"></p>
+          <button id="optimize-button" class="button primary optimize">COMPARE UPWIND SHIFT <span>↗</span></button>
+          <button id="reset-button" class="reset-button">RESET BASELINE</button>
+          <div class="lab-links"><button id="export-button" class="inline-link">Export run ↓</button><button data-research="model" class="inline-link">Model notes ↗</button></div>
+          <p class="simulation-note">Teaching model · no rotor downwash or calibration. Not a flight recommendation.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <aside class="chapter-rail" aria-label="Chapter navigation">
+    <span id="chapter-counter">01</span>
+    <div>
+      <button class="active" data-scroll-to="0" aria-label="Go to Home"><i></i></button>
+      <button data-scroll-to="1" aria-label="Go to Physics Engine"><i></i></button>
+      <button data-scroll-to="2" aria-label="Go to Wind Intelligence"><i></i></button>
+      <button data-scroll-to="3" aria-label="Go to Precision Mapping"><i></i></button>
+      <button data-scroll-to="4" aria-label="Go to Engineering"><i></i></button>
+      <button data-scroll-to="5" aria-label="Go to Simulation Lab"><i></i></button>
+    </div>
+    <span>06</span>
+  </aside>
+
+  <div class="scroll-cue" aria-hidden="true"><span>SCROLL TO ENTER THE FIELD</span><i></i></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div class="scroll-track" aria-hidden="true"></div>
+  <footer class="experience-footer"><span>DEVELOPED BY AEROGUARD <i> / </i> RESEARCH IN PROGRESS</span><nav aria-label="Company and research"><button data-research="evidence">Evidence</button><button data-research="team">Team</button><button data-research="partner">Partner with us ↗</button></nav></footer>
+  <dialog id="research-dialog" aria-label="OptiSpray research and company"><div class="research-top"><a class="brand" href="#home">OptiSpray<span> / FIELD NOTES</span></a><button class="dialog-close" aria-label="Close research panel">CLOSE ×</button></div><nav class="research-tabs" aria-label="Research topics"><button data-research-tab="evidence">Evidence</button><button data-research-tab="model">Model</button><button data-research-tab="team">Team</button><button data-research-tab="partner">Partnerships</button></nav><div id="research-content" tabindex="0"></div></dialog>
+  <noscript><div class="no-script">OptiSpray is an AeroGuard research prototype for spray-drift prediction and control. Enable JavaScript for the interactive experience, or <a href="./innovation-brief.pdf">read the Innovation Brief</a>.</div></noscript>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
