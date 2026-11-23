@@ -1,12 +1,12 @@
 import { DEFAULTS, simulate } from './physics.js';
 import { paintCharts } from './science-view.js';
 const PART_COPY={
- sensor:['BUILT / WIND SENSING','Ultrasonic wind sensing feeds an ESP32 over RS485. Sensor placement and aircraft-motion calibration remain to be tested.'],
- control:['BUILT / BENCH CONTROL','The bench pump stops after a three-second communication interruption. Integrated airborne spray guidance is not yet validated.'],
- boom:['PLANNED / GUIDANCE LAYER','A quick-release mount and flow-conditioning layer are planned. The displayed boom is an illustrative assembly, not a tested specification.'],
- nozzle:['TESTED / STATIONARY NOZZLE','Five KZ80-06 nozzle conditions were measured using water-sensitive paper. The seven-station 3D array is illustrative.'],
- tank:['INTEGRATION / EXISTING AIRCRAFT','The retrofit concept retains the operator’s aircraft. Flow, pressure, height, position and ground speed are planned aircraft inputs.'],
- interface:['BUILT / DESKTOP CONSOLE','The prototype includes wind readings, pump controls, drift simulation and landing animations. Aircraft-specific recommendations require field validation.'],
+ sensor:['BUILT / WIND SENSING','Ultrasonic wind sensing feeds an ESP32 over RS485. Sensor placement and aircraft-motion calibration remain to be tested.','Explore wind sensing','./#wind'],
+ control:['BUILT / BENCH CONTROL','The bench pump stops after a three-second communication interruption. Integrated airborne spray guidance is not yet validated.','Explore the interactive model','./#lab'],
+ boom:['PLANNED / GUIDANCE LAYER','A quick-release mount and flow-conditioning layer are planned. The displayed boom is an illustrative assembly, not a tested specification.','Review spray passes','./field-route.html#review'],
+ nozzle:['TESTED / STATIONARY NOZZLE','Five KZ80-06 nozzle conditions were measured using water-sensitive paper. The seven-station 3D array is illustrative.','Explore droplet physics','./#physics'],
+ tank:['INTEGRATION / EXISTING AIRCRAFT','The retrofit concept retains the operator’s aircraft. Flow, pressure, height, position and ground speed are planned aircraft inputs.','Adjust spray flow','./#lab'],
+ interface:['BUILT / DESKTOP CONSOLE','The prototype includes wind readings, pump controls, drift simulation and landing animations. Aircraft-specific recommendations require field validation.','Explore the Simulation Lab','./#lab'],
 };
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export function createInterface(callbacks) {
@@ -19,9 +19,10 @@ export function createInterface(callbacks) {
   document.querySelectorAll('input[data-param]').forEach(el=>{el.value=state[el.dataset.param];el.style.setProperty('--fill',`${(el.value-el.min)/(el.max-el.min)*100}%`);});
   document.querySelectorAll('[data-metric]').forEach(el=>{const n=result[el.dataset.metric];el.textContent=Number.isFinite(n)?n.toFixed(1):'—';});
   document.getElementById('drift-bar').style.width=`${clamp(result.drift/25,0,1)*100}%`;
-  for(const [attr,check] of [['direction',v=>Number(v)===state.direction],['mode',v=>(v==='optimized')===state.optimized],['path',v=>v===state.path],['part',v=>v===state.part]])document.querySelectorAll(`[data-${attr}]`).forEach(el=>{const selected=check(el.dataset[attr]);el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected));});
+  for(const [attr,check] of [['direction',v=>Number(v)===state.direction],['path',v=>v===state.path],['part',v=>v===state.part]])document.querySelectorAll(`[data-${attr}]`).forEach(el=>{const selected=check(el.dataset[attr]);el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected));});
   document.getElementById('path-label').textContent=state.path.toUpperCase();
-  const [code,description]=PART_COPY[state.part];document.getElementById('part-code').textContent=code;document.getElementById('part-description').textContent=description;
+  const [code,description,action,href]=PART_COPY[state.part];document.getElementById('part-code').textContent=code;document.getElementById('part-description').textContent=description;
+  const partAction=document.getElementById('part-action');partAction.textContent=`${action} ↗`;partAction.href=href;
   const button=document.getElementById('optimize-button');button.innerHTML=state.optimized?'VIEW BASELINE <span>↺</span>':'COMPARE UPWIND SHIFT <span>↗</span>';
   document.getElementById('comparison-result').textContent=state.optimized?`Route shifted ${state.offset.toFixed(1)} m upwind. In-field mass: ${baseline.inside.toFixed(1)}% → ${result.inside.toFixed(1)}%. CV: ${baseline.cv?.toFixed(1)??'—'}% → ${result.cv?.toFixed(1)??'—'}%.`:`Off-field: ${result.outside.toFixed(1)}% by mass / ${result.outsideCount.toFixed(1)}% by count.`;
   paintCharts(result);callbacks.onChange?.(state,result);
@@ -29,7 +30,6 @@ export function createInterface(callbacks) {
  const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;syncUI();});};
  document.querySelectorAll('input[data-param]').forEach(input=>input.addEventListener('input',()=>{state[input.dataset.param]=Number(input.value);state.optimized=false;schedule();}));
  document.querySelectorAll('[data-direction]').forEach(b=>b.addEventListener('click',()=>{state.direction=Number(b.dataset.direction);state.optimized=false;syncUI();}));
- document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{state.optimized=b.dataset.mode==='optimized';syncUI();}));
  document.querySelectorAll('[data-path]').forEach(b=>b.addEventListener('click',()=>{state.path=b.dataset.path;syncUI();}));
  function selectPart(id){if(!PART_COPY[id])return;state.part=id;callbacks.onPart?.(id);syncUI(false);}
  document.querySelectorAll('[data-part]').forEach(b=>b.addEventListener('click',()=>selectPart(b.dataset.part)));
@@ -42,10 +42,12 @@ export function createInterface(callbacks) {
   const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='OptiSpray-demo-run.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('Demonstration parameters, assumptions and mass grid exported.');
  });
  function setProgress(progress){
-  if(Math.abs(progress-lastProgress)<0.0001)return;lastProgress=progress;activeChapter=clamp(Math.round(progress),0,5);
+  if(Math.abs(progress-lastProgress)<0.0001)return;lastProgress=progress;
+  const previous=activeChapter;activeChapter=clamp(Math.round(progress),0,5);
   chapters.forEach((chapter,index)=>{const opacity=clamp(1-Math.abs(progress-index)*1.8,0,1);chapter.style.opacity=opacity;chapter.style.visibility=opacity>0.015?'visible':'hidden';chapter.classList.toggle('active',index===activeChapter);chapter.inert=index!==activeChapter;});
   document.querySelectorAll('.nav-link,.chapter-rail button').forEach(b=>{const active=Number(b.dataset.scrollTo)===activeChapter;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
   document.getElementById('chapter-counter').textContent=String(activeChapter+1).padStart(2,'0');document.getElementById('scroll-progress-bar').style.transform=`scaleX(${progress/5})`;document.querySelector('.scroll-cue').style.opacity=progress<0.18?'1':'0';
+  if(activeChapter!==previous)callbacks.onChapter?.(activeChapter);
  }
  addEventListener('resize',()=>paintCharts(result));
  return {state,syncUI,setProgress,notify,selectPart,get result(){return result;},get activeChapter(){return activeChapter;}};

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#091713">
+  <meta name="description" content="Follow the Skagit field boundary, compare flight paths and inspect spray passes and turns on an aerial map.">
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <title>Route Planning | OptiSpray</title>
+</head>
+<body class="route-case">
+  <a class="skip-link" href="#route-main">Skip to the route case</a>
+  <header class="topbar">
+    <a class="brand" href="./#home" aria-label="OptiSpray home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>OptiSpray</span>
+    </a>
+    <nav class="main-nav" aria-label="Experience chapters">
+      <a class="nav-link" href="./#home">Home</a>
+      <a class="nav-link" href="./#physics">Physics</a>
+      <a class="nav-link" href="./#wind">Wind</a>
+      <a class="nav-link" href="./#mapping">Mapping</a>
+      <a class="nav-link" href="./#engineering">Engineering</a>
+      <a class="nav-link" href="./#lab">Lab</a>
+    </nav>
+    <a class="route-nav-link route-return" href="./#mapping">Back to Mapping</a>
+  </header>
+  <main id="route-main">
+    <header class="route-heading">
+      <p class="eyebrow">SKAGIT, WASHINGTON</p>
+      <h1>Route <strong>planning.</strong></h1>
+      <p>See how a field boundary becomes a flight plan, where the aircraft sprays, and when it turns with the spray off.</p>
+    </header>
+    <nav class="route-steps" aria-label="Case steps">
+      <button type="button" data-route-step="boundary" aria-pressed="false" disabled>Field boundary</button>
+      <button type="button" data-route-step="compare" aria-pressed="false" disabled>Compare routes</button>
+      <button type="button" data-route-step="review" aria-pressed="true" disabled>Review passes &amp; turns</button>
+      <button type="button" data-route-step="deposition" aria-pressed="false" disabled>View deposition</button>
+    </nav>
+    <div class="route-workspace">
+      <figure class="case-view route-map">
+        <div class="case-view-head"><span id="route-map-title">SPRAY PASSES AND TURNS</span><span>USGS NAIP · N ↑</span></div>
+        <div id="route-primary">
+          <canvas id="route-map" role="img" aria-label="Skagit field boundary on a north-up aerial image"></canvas>
+        </div>
+        <div id="route-compare-maps" hidden>
+          <div id="route-card-a"><strong id="route-label-a">North–south route</strong><canvas id="route-map-a" role="img" aria-label="North–south route"></canvas></div>
+          <div id="route-card-b"><strong id="route-label-b">East–west route</strong><canvas id="route-map-b" role="img" aria-label="East–west route"></canvas></div>
+        </div>
+        <div class="map-legend case-scale route-scale" id="route-scale" hidden aria-label="Wet spray deposition mass per square meter"><span>0</span><i></i><span id="route-scale-max"></span></div>
+        <figcaption id="route-legend" class="route-key">
+          <span class="key-boundary"><b>1</b> Field boundary</span>
+          <span class="key-spray"><b>2</b> Spray pass</span>
+          <span class="key-transfer"><b>3</b> Turn or transfer · spray off</span>
+        </figcaption>
+      </figure>
+      <div class="route-details">
+        <section id="boundary" data-route-panel hidden>
+          <h2>Confirm the field boundary</h2>
+          <p>Marker 1 points to the recorded field edge. The planning team traced the field against aerial imagery from the U.S. Geological Survey’s National Agriculture Imagery Program (NAIP). The roads provide visible reference points.</p>
+          <p>The case records no separate exclusion zones.</p>
+        </section>
+        <section id="compare" data-route-panel hidden>
+          <h2>Compare two flight plans</h2>
+          <p>Both routes use the same field, a 20 m swath and an 11 m boundary setback. One runs north–south; the other runs east–west.</p>
+          <div class="table-wrap">
+            <table class="route-table">
+              <caption>Coverage based on planned swath geometry</caption>
+              <thead><tr><th scope="col">Metric</th><th scope="col">North–south</th><th scope="col">East–west</th></tr></thead>
+              <tbody id="route-comparison"></tbody>
+            </table>
+          </div>
+          <div class="route-weather-example" aria-labelledby="route-weather-title">
+            <h3 id="route-weather-title">Weather-aware route estimate</h3>
+            <p>Select wind conditions to compare flight-line directions on the same field.</p>
+            <div class="route-weather-fields">
+              <label for="route-weather-speed">Wind speed · m/s
+                <select id="route-weather-speed">
+                  <option value="2">2.0</option>
+                  <option value="4.6" selected>4.6</option>
+                </select>
+              </label>
+              <label for="route-weather-from">Wind from
+                <select id="route-weather-from">
+                  <option value="0">North · 0°</option>
+                  <option value="90">East · 90°</option>
+                  <option value="180">South · 180°</option>
+                  <option value="270" selected>West · 270°</option>
+                </select>
+              </label>
+              <label for="route-weather-gust">Gust variation · %
+                <select id="route-weather-gust">
+                  <option value="0" selected>0</option>
+                  <option value="15">15</option>
+                </select>
+              </label>
+            </div>
+            <p id="route-weather-direction" class="case-small" aria-live="polite"></p>
+            <div class="table-wrap">
+              <table class="route-table route-weather-table">
+                <caption>Illustrative wind-drift estimate · share of modeled spray mass</caption>
+                <thead><tr><th scope="col">Flight lines</th><th scope="col">Off-field mass</th><th scope="col">Drift P95</th></tr></thead>
+                <tbody id="route-weather-results"></tbody>
+              </table>
+            </div>
+            <p id="route-weather-recommendation" class="case-small" role="status" aria-live="polite"></p>
+          <p class="case-small">Illustrative inputs and spray profile; not a field reading, forecast, or field-validated result. Lower estimates may still include off-field deposition. Wind drift only; evaporation and rotor downwash are not modeled.</p>
+          </div>
+        </section>
+        <section id="review" data-route-panel>
+          <h2>Follow a pass into a turn</h2>
+          <p>The aircraft sprays on the solid passes and shuts off spray on the dashed connections. This is the north–south route used for the deposition prediction.</p>
+          <div class="route-segment-actions">
+            <button type="button" class="case-button" data-example-segment="spray" disabled>Show first spray pass</button>
+            <button type="button" class="case-button" data-example-segment="transfer" disabled>Show first turn</button>
+          </div>
+          <label class="route-segment-label" for="route-segment">Route segment</label>
+          <select id="route-segment" disabled></select>
+          <p id="route-segment-status" class="case-small" role="status"></p>
+        </section>
+        <section id="deposition" data-route-panel hidden>
+          <h2>See where spray lands</h2>
+          <p>The heat map shows the full-route wet spray prediction for a north–south route with a 4.6 m/s west wind. Weather inputs above update the route estimate. Open Mapping to replay the flight and see the deposit build up.</p>
+          <a href="./#mapping" class="button primary compact">Open deposition map</a>
+        </section>
+        <p class="case-small" id="route-load" role="status">Loading Skagit route records…</p>
+      </div>
+    </div>
+    <footer class="route-foot">OptiSpray by AeroGuard · Aerial imagery by USGS NAIP</footer>
+  </main>
+  <script type="module" src="./src/field-route.js"></script>
+</body>
+</html>

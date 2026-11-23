@@ -4,9 +4,10 @@ import { createDrone } from './drone.js';
 import { createEnvironment } from './environment.js';
 import { createWindField, createFlightPaths, createAtmosphericMotes } from './effects.js';
 import { createScientificView } from './science-view.js';
+import { createSkagitScene } from './skagit-scene.js';
 import { windVector } from './physics.js';
 
-export function initScene(ui) {
+export function initScene(ui, skagit) {
 const SEED = 20261116;
 const DURATION = 12;
 const CHAPTERS = 6;
@@ -28,7 +29,7 @@ const container = document.getElementById('scene-container');
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false, powerPreference: 'high-performance' });
 const pixelRatio = Math.min(window.devicePixelRatio || 1, innerWidth < 760 ? 1.4 : 1.75);
 renderer.setPixelRatio(pixelRatio);
-renderer.setSize(innerWidth, innerHeight);
+renderer.setSize(innerWidth, innerHeight, false);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -63,7 +64,8 @@ sun.shadow.camera.near = 1;
 sun.shadow.camera.far = 80;
 sun.shadow.bias = -0.00025;
 sun.shadow.normalBias = 0.025;
-scene.add(sun);
+scene.add(sun, sun.target);
+const sunOffset = sun.position.clone();
 const rim = new THREE.DirectionalLight(0x62d9c5, 1.25);
 rim.position.set(12, 9, -15);
 scene.add(rim);
@@ -88,6 +90,12 @@ const field = createEnvironment(scene, random);
 const drone = createDrone();
 scene.add(drone.group);
 const science = createScientificView(scene);
+const caseScene = createSkagitScene(scene, drone, field, mulberry32(SEED + 1));
+const viewports = {
+  physics: document.getElementById('physics-viewport'),
+  mapping: document.getElementById('mapping-viewport'),
+};
+const immersiveMedia = matchMedia('(min-width:1060px) and (min-height:680px)');
 const wind = createWindField(random);
 scene.add(wind.group);
 
@@ -134,10 +142,10 @@ const cameraStates = [
   rotation: new THREE.Euler(...state.rotation),
 }));
 
-const sprayLevels = [0.48, 0.9, 0.75, 0.14, 0, 0.75];
-const windLevels = [0, 0.22, 1, 0.18, 0, 0.35];
-const heatLevels = [0, 0, 0, 0.95, 0, 0.75];
-const pathLevels = [0.08, 0, 0.12, 0.85, 0, 0.8];
+const sprayLevels = [0.48, 0, 0.75, 0, 0, 0.75];
+const windLevels = [0, 0, 1, 0, 0, 0.35];
+const heatLevels = [0, 0, 0, 0, 0, 0.75];
+const pathLevels = [0.08, 0, 0.12, 0, 0, 0.8];
 const explodeLevels = [0, 0, 0, 0, 1, 0];
 const sunLevels = [3.1, 2.2, 2.5, 1.8, 2.8, 2.2];
 const fogNearLevels = [28, 14, 24, 45, 22, 32];
@@ -167,7 +175,56 @@ const tempPathFollow = new THREE.Vector3();
 const tempTangent = new THREE.Vector3();
 const selectedWorld = new THREE.Vector3();
 
+let renderWidth, renderHeight;
+function attachRenderer(viewport = container) {
+  if (renderer.domElement.parentElement !== viewport) viewport.prepend(renderer.domElement);
+  const width = Math.max(1, viewport.clientWidth);
+  const height = Math.max(1, viewport.clientHeight);
+  if (renderWidth !== width || renderHeight !== height) {
+    renderWidth = width;
+    renderHeight = height;
+    renderer.setSize(width, height, false);
+  }
+  camera.aspect = width / height;
+}
+
 function sample(time, progress) {
+  const kind = { 1: 'physics', 3: 'mapping' }[Math.round(progress)];
+  const frame = kind && skagit[kind]();
+  const immersive = Boolean(kind && immersiveMedia.matches);
+  document.body.classList.toggle('immersive-case', immersive);
+  if (kind) {
+    attachRenderer(immersive ? container : viewports[kind]);
+    science.animate(time, drone.group.position, 0, 0);
+    wind.group.visible = flightPaths.group.visible = motes.visible = false;
+    field.group.visible = kind === 'physics';
+    field.ground.material.color.copy(baseGroundColor);
+    field.crops.material.color.copy(baseCropColor);
+    sky.visible = kind === 'physics';
+    drone.group.visible = Boolean(frame);
+    const highView = kind === 'mapping' && frame?.camera === 'overview';
+    scene.fog.near = highView ? 240 : 40;
+    scene.fog.far = highView ? 1150 : 220;
+    scene.background.setHex(0x10221c);
+    skyUniforms.uHorizon.value.copy(scene.background);
+    sun.intensity = 2.7;
+    const trackedPosition = kind === 'mapping' && frame?.camera === 'follow' ? frame.flight.position : null;
+    sun.target.position.set(trackedPosition?.[0] ?? 0, 0, -(trackedPosition?.[1] ?? 0));
+    sun.position.copy(sun.target.position).add(sunOffset);
+    camera.fov = kind === 'physics' ? 43 : 48;
+    camera.near = kind === 'mapping' ? 2.3 : .08;
+    camera.far = kind === 'mapping' ? 1800 : 500;
+    camera.updateProjectionMatrix();
+    caseScene.show(kind, frame, camera, {
+      time, immersive, overview: cameraStates[3], mouseX: pointer.x,
+    });
+    return;
+  }
+  attachRenderer();
+  caseScene.hide();
+  sun.target.position.set(0, 0, 0);
+  sun.position.copy(sunOffset);
+  drone.group.visible = field.group.visible = motes.visible = sky.visible = true;
   const localTime = ((time % DURATION) + DURATION) % DURATION;
   const phase = (localTime / DURATION) * Math.PI * 2;
   const index = Math.min(CHAPTERS - 2, Math.floor(progress));
@@ -177,7 +234,7 @@ function sample(time, progress) {
   const mappingWeight = chapterWeight(progress, 3);
   const labWeight = chapterWeight(progress, 5);
   const engineeringWeight = chapterWeight(progress, 4);
-  const pathWeight = Math.max(mappingWeight, labWeight);
+  const pathWeight = labWeight;
   const explode = interpolate(explodeLevels, progress);
 
   tempPosition.copy(a.position).lerp(b.position, fraction);
@@ -209,7 +266,7 @@ function sample(time, progress) {
     drone.group.rotation.y = THREE.MathUtils.lerp(drone.group.rotation.y, heading, pathWeight);
     drone.group.rotation.z += Math.sin(phase * 2) * 0.025 * pathWeight;
   }
-  if (engineeringWeight < 0.01) drone.group.rotation.set(0, 0, 0);
+  if (engineeringWeight < 0.01 && pathWeight < 0.01) drone.group.rotation.set(0, 0, 0);
   drone.setExplode(explode);
   drone.update(localTime, phase);
   drone.group.updateMatrixWorld(true);
@@ -217,7 +274,7 @@ function sample(time, progress) {
   const selectedPart = drone.parts[ui.state.part];
   if (selectedPart && engineeringWeight > 0.001) {
     selectedPart.getWorldPosition(selectedWorld);
-    tempTarget.lerp(selectedWorld, engineeringWeight * 0.16);
+    tempTarget.lerp(selectedWorld, engineeringWeight * 0.46);
   }
 
   if (innerWidth < 760) {
@@ -228,6 +285,8 @@ function sample(time, progress) {
   tempPosition.x += pointer.x * 0.38 * (1 - mappingWeight) + Math.sin(phase) * 0.07;
   tempPosition.y += pointer.y * 0.2 * (1 - mappingWeight) + Math.cos(phase) * 0.045;
   camera.position.copy(tempPosition);
+  camera.near = .08;
+  camera.far = 500;
   camera.fov = THREE.MathUtils.lerp(a.fov, b.fov, fraction) + (innerWidth < 760 ? 14 : 0);
   camera.updateProjectionMatrix();
   camera.lookAt(tempTarget);
@@ -342,9 +401,6 @@ renderer.domElement.addEventListener('pointercancel', () => { dragging = false; 
 renderer.domElement.addEventListener('pointerleave', () => { if (!dragging) pointer.set(0, 0); });
 
 addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
   readScroll();
   if (paused) {
     currentProgress = targetProgress;

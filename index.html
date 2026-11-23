@@ -36,7 +36,8 @@
       <button class="nav-link" data-scroll-to="5"><span>06</span> Lab</button>
     </nav>
     <div class="header-actions">
-      <button class="research-entry" data-research="evidence">RESEARCH ↗</button><span class="system-status"><i></i> RESEARCH PROTOTYPE</span>
+      <a class="route-nav-link" href="./field-route.html">Route planning</a>
+      <button class="research-entry" data-research="research">RESEARCH ↗</button><span class="system-status"><i></i> SPRAY PHYSICS</span>
       <button id="motion-toggle" class="text-button" aria-pressed="false" title="Pause ambient motion">MOTION ON</button>
     </div>
     <div class="scroll-progress" aria-hidden="true"><i id="scroll-progress-bar"></i></div>
@@ -48,7 +49,7 @@
         <div class="chapter-copy hero-copy">
           <p class="eyebrow"><span>01 / HOME</span> AERIAL INTELLIGENCE</p>
           <h1>PRECISION<br><strong>IN EVERY DROP</strong></h1>
-          <p class="lede">Know where the spray goes. Local wind sensing, deposition modelling and retrofit guidance — developed for the aircraft you already operate.</p>
+          <p class="lede">Follow spray from the nozzle to the field. Explore how airflow moves droplets and where their remaining mass lands.</p>
           <div class="cta-row">
             <button class="button primary" data-scroll-to="5">ENTER SIMULATION <span>↗</span></button>
             <button class="button ghost" data-scroll-to="1">EXPLORE THE PHYSICS <span>↓</span></button>
@@ -72,24 +73,46 @@
     </section>
 
     <section class="chapter" id="physics" data-chapter="1" aria-label="Physics engine" inert>
-      <div class="chapter-layout">
-        <div class="chapter-copy">
-          <p class="eyebrow"><span>02 / PHYSICS ENGINE</span> MICRO SCALE</p>
-          <h2>UNDERSTAND<br><strong>EVERY DROP</strong></h2>
-          <p class="lede">Small droplets. Longer exposure. Explore how gravity and air resistance turn wind into displacement — and why droplet count is not chemical dose.</p>
-          <div class="process-chain" aria-label="Physics process">
-            <span>RELEASE</span><i></i><span>DRAG</span><i></i><span>DRIFT</span><i></i><span>DEPOSIT</span>
+      <div class="case-layout physics-layout">
+        <div class="physics-left">
+          <header class="case-heading">
+            <p class="eyebrow"><span>02 / PHYSICS ENGINE</span> SKAGIT FIELD</p>
+            <h2>Understand<br><strong>every drop.</strong></h2>
+            <p class="case-weather" data-case-weather>Loading case conditions…</p>
+          </header>
+          <div class="physics-notes">
+            <p>Rotor downwash changes the airflow beneath the aircraft and how drops descend. Temperature and humidity affect evaporation and shrinkage. Remaining water and tracer form the deposit at landing.</p>
+            <button class="inline-link" data-research="research">Deposition model</button>
+            <figure class="mist-figure">
+              <div class="mist-crop">
+                <img src="./skagit/spray-closeup.png" width="760" height="515" alt="OptiSpray aircraft over crop rows, with falling droplets above blue areas of accumulated spray" loading="lazy">
+                <span class="mist-flight">↗ Northbound flight</span><span class="mist-wind">↘ West-to-east wind</span><span class="mist-ground">Landing surface</span>
+              </div>
+              <figcaption>Spray on the first northbound pass. Blue marks show where droplets have landed.</figcaption>
+            </figure>
           </div>
-          <button class="button ghost compact" data-scroll-to="2">FOLLOW THE AIRFLOW <span>↓</span></button>
         </div>
+        <figure class="case-view physics-view">
+          <div class="case-view-head"><span>3D DROPLET PATH</span><span>RELEASE POSITION</span></div>
+          <div id="physics-viewport" class="case-viewport" aria-hidden="true"></div>
+          <figcaption>Aircraft shown at release. The cyan line follows the sampled drop to the landing surface.</figcaption>
+        </figure>
         <aside class="physics-readout hud-panel interactive-panel">
-          <div class="hud-heading"><span>TRAJECTORY / TEACHING MODEL</span><i>SI UNITS</i></div>
-          <div class="formula">m dv/dt = mg + F<sub>drag</sub></div>
-          <canvas data-chart="trajectory" aria-label="Droplet height versus downwind displacement for three size classes" role="img"></canvas>
-          <div class="size-legend"><span>● 0.7D</span><span>● D</span><span>● 1.3D</span></div>
-          <label class="control-row"><span>REFERENCE DIAMETER <b><output data-value="size">220</output> μm</b></span><input type="range" min="100" max="400" step="10" value="220" data-param="size" aria-label="Physics reference diameter"></label>
-          <div class="flight-line"><span>MASS-WEIGHTED AIRTIME</span><b><span data-metric="flightTime">—</span> s</b></div>
-          <button class="inline-link" data-research="model">Equations & assumptions ↗</button>
+            <div class="case-pickers">
+              <label>Initial size<select id="physics-size"></select></label>
+            </div>
+            <canvas id="physics-chart" aria-label="Droplet height versus downwind travel" role="img"></canvas>
+            <div class="case-flight-controls">
+              <button type="button" class="case-button" id="physics-play" disabled>Play drop</button>
+              <output id="physics-time">—</output>
+            </div>
+            <dl class="case-stats physics-stats" aria-label="Sampled drop at landing">
+              <div><dt>Airtime</dt><dd id="physics-airtime">—</dd></div>
+              <div><dt>Landing diameter</dt><dd id="physics-diameter">—</dd></div>
+              <div><dt>Wet mass retained</dt><dd id="physics-mass">—</dd></div>
+              <div><dt>Downwind travel</dt><dd id="physics-drift">—</dd></div>
+            </dl>
+            <p class="case-small" id="physics-sample">Loading Skagit trajectories…</p>
         </aside>
       </div>
     </section>
@@ -118,31 +141,53 @@
               <button data-direction="0">N</button><button data-direction="90" class="selected">E</button><button data-direction="180">S</button><button data-direction="270">W</button>
             </div>
           </div>
-          <div class="wind-impact"><span>MODEL MEAN DRIFT</span><strong><span data-metric="drift">—</span> m</strong><i id="drift-bar"></i></div>
+          <div class="wind-impact"><span>BROWSER MODEL MEAN DRIFT</span><strong><span data-metric="drift">—</span> m</strong><i id="drift-bar"></i></div>
+          <p class="case-small">Skagit wind comes from the west (270°) and travels east (90°).</p>
         </aside>
       </div>
     </section>
 
     <section class="chapter" id="mapping" data-chapter="3" aria-label="Precision mapping" inert>
-      <div class="chapter-layout">
-        <div class="chapter-copy mapping-copy">
-          <p class="eyebrow"><span>04 / PRECISION MAPPING</span> DEPOSITION TWIN</p>
-          <h2>MAP EVERY<br><strong>PARTICLE</strong></h2>
-          <p class="lede">The same trajectories become a mass-weighted deposition grid. Compare an unchanged route with a mean-drift upwind shift. Check distribution as well as retention.</p>
-          <div class="map-legend" aria-label="Deposition legend">
-            <span>LOW</span><i></i><span>RELATIVE CELL MASS</span><i></i><span>HIGH</span>
+      <div class="case-layout mapping-layout">
+        <div class="mapping-left">
+          <header class="case-heading">
+            <div><p class="eyebrow"><span>04 / PRECISION MAPPING</span> SKAGIT FIELD</p><h2>See where<br><strong>spray lands.</strong></h2></div>
+            <p>Follow the aircraft along a planned route. The 3D field and the aerial map show the same simulated deposits as droplets land.</p>
+          </header>
+          <div class="mapping-controls">
+            <label class="map-select">Mass layer <select id="mapping-component"><option value="wet">Wet spray</option><option value="nv">Nonvolatile tracer</option></select></label>
           </div>
-          <div class="segmented compare-toggle" role="group" aria-label="Spray comparison">
-            <button data-mode="standard" class="selected">BASELINE</button>
-            <button data-mode="optimized">UPWIND SHIFT</button>
+          <a class="route-entry-row" href="./field-route.html"><span>01</span><b>Route planning case</b><i>↗</i></a>
+        </div>
+        <aside class="mapping-side">
+          <figure class="case-view mapping-aerial">
+            <div class="case-view-head"><span>FIELD MAP</span><span title="U.S. Geological Survey · National Agriculture Imagery Program">USGS NAIP · N ↑</span></div>
+            <div class="case-map-stage"><canvas id="mapping-map" role="img" aria-label="North-up Skagit field boundary, spray and transfer segments, and simulated deposition"></canvas></div>
+            <figcaption class="route-key"><span class="key-boundary">Field boundary</span><span class="key-spray">Spray</span><span class="key-transfer">Spray off</span><span>Wind W → E</span></figcaption>
+          </figure>
+          <dl class="case-stats mapping-stats" aria-label="Full-route results">
+            <div><dt>In-field tracer</dt><dd id="mapping-inside">—</dd></div>
+            <div><dt>Off-field tracer</dt><dd id="mapping-outside">—</dd></div>
+            <div><dt>Water evaporated</dt><dd id="mapping-water">—</dd></div>
+            <div><dt>Drift P95</dt><dd id="mapping-drift">—</dd></div>
+          </dl>
+          <details class="mapping-definitions"><summary>Full-route metric definitions</summary><p class="case-small" id="mapping-definitions"></p></details>
+        </aside>
+        <figure class="case-view mapping-scene-figure">
+          <div class="case-view-head"><span>3D ROUTE</span></div>
+          <div id="mapping-viewport" class="case-viewport" aria-hidden="true"></div>
+          <figcaption>Both views add deposits at landing.</figcaption>
+        </figure>
+        <div class="mapping-bottom hud-panel">
+          <div class="map-console-head"><p class="case-small" id="mapping-status">Loading Skagit deposition…</p><label class="map-select">3D camera <select id="mapping-camera"><option value="overview">Overview</option><option value="follow">Follow aircraft</option></select></label></div>
+          <div class="map-legend case-scale" aria-label="Deposition mass per square meter"><span>0</span><i></i><span id="mapping-scale">15 g/m²</span></div>
+          <div class="map-playback">
+            <button type="button" class="case-button" id="mapping-play" disabled>Play 2×</button>
+            <label class="sr-only" for="mapping-time">Route time</label><input type="range" id="mapping-time" min="0" step="0.01" disabled>
+            <output id="mapping-clock">—</output>
+            <button type="button" class="case-button" id="mapping-end" disabled>Full route</button>
           </div>
         </div>
-        <aside class="map-readout">
-          <span>IN-FIELD MASS</span>
-          <strong><span data-metric="inside">—</span><small>%</small></strong>
-          <p><i></i> BROWSER MODEL · NOT FIELD DATA</p>
-        </aside>
-        <div class="map-caption hud-panel"><span>DEMO FIELD</span><span>CELLS 1 × 1 m</span><span>36 × 28 m</span></div>
       </div>
     </section>
 
@@ -168,6 +213,7 @@
           <div class="part-detail" aria-live="polite">
             <span id="part-code">WS–01 / WIND SENSING</span>
             <p id="part-description">Built: ultrasonic wind sensing, RS485 communication and ESP32 control. Airborne sensor placement and calibration are next.</p>
+            <a id="part-action" class="part-action" href="./#wind">Explore wind sensing ↗</a>
           </div>
         </aside>
       </div>
@@ -185,7 +231,7 @@
           <dl><div><dt>PATH</dt><dd id="path-label">SERPENTINE</dd></div><div><dt>MODEL</dt><dd>FREE-SETTLING DEMO</dd></div></dl>
         </div>
         <aside class="lab-console interactive-panel">
-          <div class="console-header"><div><span>OPTISPRAY / LAB</span><b>MODEL PARAMETERS</b></div><i>DEMO / 01</i></div>
+          <div class="console-header"><div><span>OPTISPRAY / LAB</span><b>MODEL PARAMETERS</b></div><i>LIVE MODEL</i></div>
           <div class="console-controls">
             <label class="control-row"><span>WIND SPEED <b><output data-value="wind">2.4</output> m/s</b></span><input type="range" min="0" max="8" step="0.1" value="2.4" data-param="wind" aria-label="Lab wind speed"></label>
             <label class="control-row"><span>FLIGHT HEIGHT <b><output data-value="height">3.0</output> m</b></span><input type="range" min="1.5" max="6" step="0.1" value="3" data-param="height" aria-label="Lab flight height"></label>
@@ -203,8 +249,8 @@
           <p class="comparison-result" id="comparison-result" aria-live="polite"></p>
           <button id="optimize-button" class="button primary optimize">COMPARE UPWIND SHIFT <span>↗</span></button>
           <button id="reset-button" class="reset-button">RESET BASELINE</button>
-          <div class="lab-links"><button id="export-button" class="inline-link">Export run ↓</button><button data-research="model" class="inline-link">Model notes ↗</button></div>
-          <p class="simulation-note">Teaching model · no rotor downwash or calibration. Not a flight recommendation.</p>
+          <div class="lab-links"><button id="export-button" class="inline-link">Export run ↓</button><button data-research="research" class="inline-link">Spray physics ↗</button><a href="./field-route.html" class="inline-link">Skagit route case</a></div>
+          <p class="simulation-note">Free-settling teaching model · constant wind, spherical droplets, no evaporation or rotor downwash.</p>
         </aside>
       </div>
     </section>
@@ -226,8 +272,8 @@
   <div class="scroll-cue" aria-hidden="true"><span>SCROLL TO ENTER THE FIELD</span><i></i></div>
   <div id="toast" role="status" aria-live="polite"></div>
   <div class="scroll-track" aria-hidden="true"></div>
-  <footer class="experience-footer"><span>DEVELOPED BY AEROGUARD <i> / </i> RESEARCH IN PROGRESS</span><nav aria-label="Company and research"><button data-research="evidence">Evidence</button><button data-research="team">Team</button><button data-research="partner">Partner with us ↗</button></nav></footer>
-  <dialog id="research-dialog" aria-label="OptiSpray research and company"><div class="research-top"><a class="brand" href="#home">OptiSpray<span> / FIELD NOTES</span></a><button class="dialog-close" aria-label="Close research panel">CLOSE ×</button></div><nav class="research-tabs" aria-label="Research topics"><button data-research-tab="evidence">Evidence</button><button data-research-tab="model">Model</button><button data-research-tab="team">Team</button><button data-research-tab="partner">Partnerships</button></nav><div id="research-content" tabindex="0"></div></dialog>
+  <footer class="experience-footer"><span>DEVELOPED BY AEROGUARD <i> / </i> SPRAY PHYSICS</span><nav aria-label="Company and research"><button data-research="research">Research</button><button data-research="team">Team</button><button data-research="partner">Partner with us ↗</button></nav></footer>
+  <dialog id="research-dialog" aria-label="OptiSpray research and company"><div class="research-top"><a class="brand" href="#home">OptiSpray<span> / FIELD NOTES</span></a><button class="dialog-close" aria-label="Close research panel">CLOSE ×</button></div><nav class="research-tabs" aria-label="Research and company"><button data-research-tab="research">Research</button><button data-research-tab="team">Team</button><button data-research-tab="partner">Partnerships</button></nav><div id="research-content" tabindex="0"></div></dialog>
   <noscript><div class="no-script">OptiSpray is an AeroGuard research prototype for spray-drift prediction and control. Enable JavaScript for the interactive experience, or <a href="./innovation-brief.pdf">read the Innovation Brief</a>.</div></noscript>
   <script type="module" src="./src/main.js"></script>
 </body>
