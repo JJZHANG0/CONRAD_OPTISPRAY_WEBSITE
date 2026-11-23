@@ -74,7 +74,7 @@ function physics(active) {
       select();
     }).catch(error => {
       console.error(error);
-      set('physics-sample', 'The Skagit trajectories could not load. Reload the page to try again.');
+      set('physics-sample', 'The particle trajectories could not load. Reload the page to try again.');
     }).finally(() => { loading = false; });
   }
 
@@ -157,7 +157,7 @@ function mapping(active) {
       render(true);
     } catch (error) {
       console.error(error);
-      set('mapping-status', 'The Skagit prediction could not load. Reload the page to try again.');
+      set('mapping-status', 'The field prediction could not load. Reload the page to try again.');
     } finally {
       loading = false;
     }
@@ -213,7 +213,7 @@ export function initSkagit(ui) {
       physicsView.preload();
       loadCase().then(({ environment: env }) => {
         weather.textContent = `Wind W → E at ${env.wind_speed_mps} m/s · ${env.temperature_c} °C · ${env.relative_humidity_pct}% relative humidity`;
-      }).catch(() => { weather.textContent = 'Skagit conditions unavailable'; });
+      }).catch(() => { weather.textContent = 'Field conditions unavailable'; });
     }
     if (index === 3) mappingView.preload();
   }

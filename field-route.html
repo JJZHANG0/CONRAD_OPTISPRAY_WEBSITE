@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#091713">
-  <meta name="description" content="Follow the Skagit field boundary, compare flight paths and inspect spray passes and turns on an aerial map.">
+  <meta name="description" content="Follow a field boundary, compare flight paths and inspect spray passes and turns on an aerial map.">
   <link rel="icon" type="image/png" href="./favicon.png">
   <title>Route Planning | OptiSpray</title>
 </head>
@@ -26,7 +26,7 @@
   </header>
   <main id="route-main">
     <header class="route-heading">
-      <p class="eyebrow">SKAGIT, WASHINGTON</p>
+      <p class="eyebrow">FIELD ROUTE CASE</p>
       <h1>Route <strong>planning.</strong></h1>
       <p>See how a field boundary becomes a flight plan, where the aircraft sprays, and when it turns with the spray off.</p>
     </header>
@@ -38,9 +38,9 @@
     </nav>
     <div class="route-workspace">
       <figure class="case-view route-map">
-        <div class="case-view-head"><span id="route-map-title">SPRAY PASSES AND TURNS</span><span>USGS NAIP · N ↑</span></div>
+        <div class="case-view-head"><span id="route-map-title">SPRAY PASSES AND TURNS</span><span>AERIAL VIEW · N ↑</span></div>
         <div id="route-primary">
-          <canvas id="route-map" role="img" aria-label="Skagit field boundary on a north-up aerial image"></canvas>
+          <canvas id="route-map" role="img" aria-label="Field boundary on a north-up aerial image"></canvas>
         </div>
         <div id="route-compare-maps" hidden>
           <div id="route-card-a"><strong id="route-label-a">North–south route</strong><canvas id="route-map-a" role="img" aria-label="North–south route"></canvas></div>
@@ -56,15 +56,15 @@
       <div class="route-details">
         <section id="boundary" data-route-panel hidden>
           <h2>Confirm the field boundary</h2>
-          <p>Marker 1 points to the recorded field edge. The planning team traced the field against aerial imagery from the U.S. Geological Survey’s National Agriculture Imagery Program (NAIP). The roads provide visible reference points.</p>
-          <p>The case records no separate exclusion zones.</p>
+          <p>Marker 1 highlights the field edge and its road references on the aerial map.</p>
+          <p>No exclusion zones are shown.</p>
         </section>
         <section id="compare" data-route-panel hidden>
           <h2>Compare two flight plans</h2>
           <p>Both routes use the same field, a 20 m swath and an 11 m boundary setback. One runs north–south; the other runs east–west.</p>
           <div class="table-wrap">
             <table class="route-table">
-              <caption>Coverage based on planned swath geometry</caption>
+              <caption>Coverage by route direction</caption>
               <thead><tr><th scope="col">Metric</th><th scope="col">North–south</th><th scope="col">East–west</th></tr></thead>
               <tbody id="route-comparison"></tbody>
             </table>
@@ -97,13 +97,12 @@
             <p id="route-weather-direction" class="case-small" aria-live="polite"></p>
             <div class="table-wrap">
               <table class="route-table route-weather-table">
-                <caption>Illustrative wind-drift estimate · share of modeled spray mass</caption>
+                <caption>Predicted off-field spray mass by flight-line direction</caption>
                 <thead><tr><th scope="col">Flight lines</th><th scope="col">Off-field mass</th><th scope="col">Drift P95</th></tr></thead>
                 <tbody id="route-weather-results"></tbody>
               </table>
             </div>
-            <p id="route-weather-recommendation" class="case-small" role="status" aria-live="polite"></p>
-          <p class="case-small">Illustrative inputs and spray profile; not a field reading, forecast, or field-validated result. Lower estimates may still include off-field deposition. Wind drift only; evaporation and rotor downwash are not modeled.</p>
+          <p id="route-weather-recommendation" class="case-small" role="status" aria-live="polite"></p>
           </div>
         </section>
         <section id="review" data-route-panel>
@@ -122,10 +121,10 @@
           <p>The heat map shows the full-route wet spray prediction for a north–south route with a 4.6 m/s west wind. Weather inputs above update the route estimate. Open Mapping to replay the flight and see the deposit build up.</p>
           <a href="./#mapping" class="button primary compact">Open deposition map</a>
         </section>
-        <p class="case-small" id="route-load" role="status">Loading Skagit route records…</p>
+        <p class="case-small" id="route-load" role="status">Loading route data…</p>
       </div>
     </div>
-    <footer class="route-foot">OptiSpray by AeroGuard · Aerial imagery by USGS NAIP</footer>
+    <footer class="route-foot">OptiSpray by AeroGuard · Field route model</footer>
   </main>
   <script type="module" src="./src/field-route.js"></script>
 </body>

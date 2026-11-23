@@ -112,18 +112,27 @@ let dragging = false;
 let dragStartX = 0;
 let dragLastX = 0;
 let dragDistance = 0;
+let displayedLabResult;
 
 const api = {
   onChange(state, result) {
-    science.update(result);
     wind.uniforms.uSpeed.value = state.wind;
     flightPaths.setPath(state.path);
     const dir = windVector(1, state.direction);
     flightPaths.group.position.set(-state.offset * dir[0], 0, -state.offset * dir[2]);
   },
+  onLabResult(data) {
+    if (displayedLabResult !== data) labClock = 0;
+    displayedLabResult = data;
+    science.update(data);
+  },
   onPart(id) { drone.setSelected(id); },
   onMotion(enabled) { paused = !enabled; }
 };
+if (ui.result) {
+  displayedLabResult = ui.result;
+  science.update(ui.result);
+}
 drone.setSelected('sensor');
 
 
@@ -188,7 +197,7 @@ function attachRenderer(viewport = container) {
   camera.aspect = width / height;
 }
 
-function sample(time, progress) {
+function sample(time, progress, labTime = 0) {
   const kind = { 1: 'physics', 3: 'mapping' }[Math.round(progress)];
   const frame = kind && skagit[kind]();
   const immersive = Boolean(kind && immersiveMedia.matches);
@@ -226,6 +235,9 @@ function sample(time, progress) {
   sun.position.copy(sunOffset);
   drone.group.visible = field.group.visible = motes.visible = sky.visible = true;
   const localTime = ((time % DURATION) + DURATION) % DURATION;
+  const labCycleTime = ((labTime % DURATION) + DURATION) % DURATION;
+  const labResult = ui.result;
+  const labModelTime = labResult ? labCycleTime / DURATION * labResult.replayDuration : labCycleTime;
   const phase = (localTime / DURATION) * Math.PI * 2;
   const index = Math.min(CHAPTERS - 2, Math.floor(progress));
   const fraction = smooth(clamp(progress - index));
@@ -243,7 +255,9 @@ function sample(time, progress) {
   tempDrone.y = THREE.MathUtils.lerp(ui.state.height + 2.24, tempDrone.y, engineeringWeight);
 
   if (pathWeight > 0.001) {
-    const missionProgress = localTime / DURATION;
+    const missionProgress = labResult
+      ? Math.min(1, labModelTime / Math.max(labResult.routeDuration, 1e-6))
+      : localTime / DURATION;
     tempPathPoint.copy(flightPaths.getPoint(missionProgress));
     tempPathPoint.add(flightPaths.group.position);
     tempPathPoint.y = ui.state.height + 2.24;
@@ -291,7 +305,7 @@ function sample(time, progress) {
   camera.updateProjectionMatrix();
   camera.lookAt(tempTarget);
 
-  science.animate(time, drone.group.position, interpolate(sprayLevels, progress), interpolate(heatLevels, progress));
+  science.animate(time, drone.group.position, interpolate(sprayLevels, progress), interpolate(heatLevels, progress), labModelTime);
   wind.uniforms.uTime.value = localTime;
   wind.uniforms.uOpacity.value = interpolate(windLevels, progress) * Math.min(1, ui.state.wind);
   wind.group.rotation.y = THREE.MathUtils.degToRad(90 - ui.state.direction);
@@ -316,6 +330,8 @@ function sample(time, progress) {
 let targetProgress = 0;
 let currentProgress = 0;
 let simTime = 0;
+let labClock = 0;
+let wasLabActive = false;
 let accumulator = 0;
 let frames = 0;
 let fpsTime = 0;
@@ -345,8 +361,15 @@ renderer.setAnimationLoop(() => {
       simTime += STEP;
     }
   }
-  sample(simTime, currentProgress);
   ui.setProgress(currentProgress);
+  const labActive = ui.activeChapter === 5;
+  if (labActive && !wasLabActive) labClock = 0;
+  if (labActive) {
+    if (reduced) labClock = DURATION - STEP;
+    else if (!paused) labClock += dt;
+  }
+  wasLabActive = labActive;
+  sample(simTime, currentProgress, labClock);
   draw();
   fpsTime += dt;
   if (fpsTime >= 1) {

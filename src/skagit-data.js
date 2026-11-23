@@ -7,7 +7,7 @@ export function loadCase() {
 
 export async function loadJson(name) {
   const response = await fetch(caseUrl(name));
-  if (!response.ok) throw new Error(`Skagit data: ${response.status} (${name})`);
+  if (!response.ok) throw new Error(`Field data: ${response.status} (${name})`);
   if (!name.endsWith('.bin')) return response.json();
   const stream = response.body.pipeThrough(new DecompressionStream('gzip'));
   return new Response(stream).json();

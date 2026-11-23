@@ -120,7 +120,7 @@ Promise.all([loadCase(), caseImage(), loadJson('route-weather.json')]).then(([da
         continue;
       }
       heading.textContent = `${option.route} route${option.bearingDeg === scenario.recommendedBearing ? ' · Lower estimate' : ''}`;
-      canvas.setAttribute('aria-label', `${option.route} flight lines over the Skagit field boundary`);
+      canvas.setAttribute('aria-label', `${option.route} flight lines over the field boundary`);
       const segments = option.segments.map((segment, number) => ({
         start_enu_m: segment.start,
         end_enu_m: segment.end,
@@ -147,7 +147,7 @@ Promise.all([loadCase(), caseImage(), loadJson('route-weather.json')]).then(([da
 
   async function showDeposition() {
     title.textContent = 'FULL-ROUTE WET SPRAY';
-    canvas.setAttribute('aria-label', 'Skagit full-route predicted wet-spray deposition');
+    canvas.setAttribute('aria-label', 'Full-route predicted wet-spray deposition');
     status.textContent = 'Loading the full-route prediction…';
     deposition ??= loadJson('landings.bin').then(events => {
       const raster = createDeposition(data, events);
@@ -178,7 +178,7 @@ Promise.all([loadCase(), caseImage(), loadJson('route-weather.json')]).then(([da
     el('route-scale').hidden = step !== 'deposition';
     if (step === 'boundary') {
       title.textContent = 'RECORDED FIELD BOUNDARY';
-      canvas.setAttribute('aria-label', 'North-up aerial image showing the recorded Skagit field boundary at marker 1');
+      canvas.setAttribute('aria-label', 'North-up aerial image showing the field boundary at marker 1');
       drawMap(canvas, data, imagery, { segments: [], marks: [field] });
     }
     if (step === 'compare') showComparison();
@@ -226,5 +226,5 @@ Promise.all([loadCase(), caseImage(), loadJson('route-weather.json')]).then(([da
   showFromHash();
 }).catch(error => {
   console.error(error);
-  status.textContent = 'The Skagit route records could not load. Reload the page to try again.';
+  status.textContent = 'The route records could not load. Reload the page to try again.';
 });

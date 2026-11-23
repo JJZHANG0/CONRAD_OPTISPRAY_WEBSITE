@@ -63,8 +63,8 @@
         <aside class="flight-tag hud-panel">
           <div class="hud-heading"><span>ILLUSTRATIVE AIRCRAFT</span><i>DEMO</i></div>
           <div class="flight-line"><span>ALTITUDE</span><b><span data-value="height">3.0</span> m</b></div>
-          <div class="flight-line"><span>WIND</span><b><span data-value="wind">2.4</span> m/s</b></div>
-          <div class="flight-line"><span>FLOW</span><b><span data-value="flow">1.8</span> L/min</b></div>
+          <div class="flight-line"><span>WIND</span><b><span data-value="wind">4.6</span> m/s</b></div>
+          <div class="flight-line"><span>FLOW</span><b><span data-value="flow">1.7</span> L/min</b></div>
           <div class="signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           <p>PARAMETER-DRIVEN PREVIEW</p>
         </aside>
@@ -76,7 +76,7 @@
       <div class="case-layout physics-layout">
         <div class="physics-left">
           <header class="case-heading">
-            <p class="eyebrow"><span>02 / PHYSICS ENGINE</span> SKAGIT FIELD</p>
+            <p class="eyebrow"><span>02 / PHYSICS ENGINE</span> FIELD CASE</p>
             <h2>Understand<br><strong>every drop.</strong></h2>
             <p class="case-weather" data-case-weather>Loading case conditions…</p>
           </header>
@@ -112,7 +112,7 @@
               <div><dt>Wet mass retained</dt><dd id="physics-mass">—</dd></div>
               <div><dt>Downwind travel</dt><dd id="physics-drift">—</dd></div>
             </dl>
-            <p class="case-small" id="physics-sample">Loading Skagit trajectories…</p>
+            <p class="case-small" id="physics-sample">Loading particle trajectories…</p>
         </aside>
       </div>
     </section>
@@ -128,8 +128,8 @@
         <aside class="wind-console hud-panel interactive-panel">
           <div class="hud-heading"><span>WIND FIELD CONTROL</span><i>DEMO</i></div>
           <label class="control-row">
-            <span>WIND SPEED <b><output data-value="wind">2.4</output> m/s</b></span>
-            <input type="range" min="0" max="8" step="0.1" value="2.4" data-param="wind" aria-label="Wind speed">
+            <span>WIND SPEED <b><output data-value="wind">4.6</output> m/s</b></span>
+            <input type="range" min="0" max="8" step="0.1" value="4.6" data-param="wind" aria-label="Wind speed">
           </label>
           <label class="control-row">
             <span>FLIGHT HEIGHT <b><output data-value="height">3.0</output> m</b></span>
@@ -141,8 +141,8 @@
               <button data-direction="0">N</button><button data-direction="90" class="selected">E</button><button data-direction="180">S</button><button data-direction="270">W</button>
             </div>
           </div>
-          <div class="wind-impact"><span>BROWSER MODEL MEAN DRIFT</span><strong><span data-metric="drift">—</span> m</strong><i id="drift-bar"></i></div>
-          <p class="case-small">Skagit wind comes from the west (270°) and travels east (90°).</p>
+          <div class="wind-impact"><span>MODEL DRIFT P95</span><strong><span data-metric="drift">—</span> m</strong><i id="drift-bar"></i></div>
+          <p class="case-small">Wind travels east from the west.</p>
         </aside>
       </div>
     </section>
@@ -151,7 +151,7 @@
       <div class="case-layout mapping-layout">
         <div class="mapping-left">
           <header class="case-heading">
-            <div><p class="eyebrow"><span>04 / PRECISION MAPPING</span> SKAGIT FIELD</p><h2>See where<br><strong>spray lands.</strong></h2></div>
+            <div><p class="eyebrow"><span>04 / PRECISION MAPPING</span> FIELD CASE</p><h2>See where<br><strong>spray lands.</strong></h2></div>
             <p>Follow the aircraft along a planned route. The 3D field and the aerial map show the same simulated deposits as droplets land.</p>
           </header>
           <div class="mapping-controls">
@@ -161,8 +161,8 @@
         </div>
         <aside class="mapping-side">
           <figure class="case-view mapping-aerial">
-            <div class="case-view-head"><span>FIELD MAP</span><span title="U.S. Geological Survey · National Agriculture Imagery Program">USGS NAIP · N ↑</span></div>
-            <div class="case-map-stage"><canvas id="mapping-map" role="img" aria-label="North-up Skagit field boundary, spray and transfer segments, and simulated deposition"></canvas></div>
+            <div class="case-view-head"><span>FIELD MAP</span><span>AERIAL VIEW · N ↑</span></div>
+            <div class="case-map-stage"><canvas id="mapping-map" role="img" aria-label="North-up field boundary, spray and transfer segments, and simulated deposition"></canvas></div>
             <figcaption class="route-key"><span class="key-boundary">Field boundary</span><span class="key-spray">Spray</span><span class="key-transfer">Spray off</span><span>Wind W → E</span></figcaption>
           </figure>
           <dl class="case-stats mapping-stats" aria-label="Full-route results">
@@ -179,7 +179,7 @@
           <figcaption>Both views add deposits at landing.</figcaption>
         </figure>
         <div class="mapping-bottom hud-panel">
-          <div class="map-console-head"><p class="case-small" id="mapping-status">Loading Skagit deposition…</p><label class="map-select">3D camera <select id="mapping-camera"><option value="overview">Overview</option><option value="follow">Follow aircraft</option></select></label></div>
+          <div class="map-console-head"><p class="case-small" id="mapping-status">Loading field deposition…</p><label class="map-select">3D camera <select id="mapping-camera"><option value="overview">Overview</option><option value="follow">Follow aircraft</option></select></label></div>
           <div class="map-legend case-scale" aria-label="Deposition mass per square meter"><span>0</span><i></i><span id="mapping-scale">15 g/m²</span></div>
           <div class="map-playback">
             <button type="button" class="case-button" id="mapping-play" disabled>Play 2×</button>
@@ -227,30 +227,32 @@
           <p>Trajectories. Deposits. One transparent teaching model.</p>
         </div>
         <div class="mission-status hud-panel">
-          <span><i></i> ILLUSTRATIVE ROUTE REPLAY</span>
-          <dl><div><dt>PATH</dt><dd id="path-label">SERPENTINE</dd></div><div><dt>MODEL</dt><dd>FREE-SETTLING DEMO</dd></div></dl>
+          <span><i></i> PHYSICS-BASED ROUTE</span>
+          <dl><div><dt>PATH</dt><dd id="path-label">SERPENTINE</dd></div><div><dt>MODEL</dt><dd>DRIFT &amp; DEPOSITION</dd></div></dl>
         </div>
         <aside class="lab-console interactive-panel">
           <div class="console-header"><div><span>OPTISPRAY / LAB</span><b>MODEL PARAMETERS</b></div><i>LIVE MODEL</i></div>
           <div class="console-controls">
-            <label class="control-row"><span>WIND SPEED <b><output data-value="wind">2.4</output> m/s</b></span><input type="range" min="0" max="8" step="0.1" value="2.4" data-param="wind" aria-label="Lab wind speed"></label>
+            <label class="control-row"><span>WIND SPEED <b><output data-value="wind">4.6</output> m/s</b></span><input type="range" min="0" max="8" step="0.1" value="4.6" data-param="wind" aria-label="Lab wind speed"></label>
             <label class="control-row"><span>FLIGHT HEIGHT <b><output data-value="height">3.0</output> m</b></span><input type="range" min="1.5" max="6" step="0.1" value="3" data-param="height" aria-label="Lab flight height"></label>
-            <label class="control-row"><span>SPRAY FLOW <b><output data-value="flow">1.8</output> L/min</b></span><input type="range" min="0.8" max="3" step="0.1" value="1.8" data-param="flow" aria-label="Spray flow"></label>
-            <label class="control-row"><span>REFERENCE DIAMETER <b><output data-value="size">220</output> μm</b></span><input type="range" min="100" max="400" step="10" value="220" data-param="size" aria-label="Droplet size"></label>
+            <label class="control-row"><span>SPRAY FLOW <b><output data-value="flow">1.7</output> L/min</b></span><input type="range" min="0.8" max="3" step="0.1" value="1.7" data-param="flow" aria-label="Spray flow"></label>
+            <label class="control-row"><span>DROPLET D50 <b><output data-value="size">230</output> μm</b></span><input type="range" min="100" max="400" step="10" value="230" data-param="size" aria-label="Droplet D50"></label>
           </div>
           <label class="control-row direction-slider"><span>WIND TOWARD <b><output data-value="direction">90</output>°</b></span><input type="range" min="0" max="360" step="15" value="90" data-param="direction" aria-label="Lab wind travel direction"></label>
           <div class="path-control"><span>FLIGHT PATH</span><div class="segmented" role="group" aria-label="Flight path"><button data-path="single">SINGLE</button><button data-path="serpentine" class="selected">SERPENTINE</button><button data-path="perimeter">PERIMETER</button></div></div>
+          <div class="route-recommendation" aria-live="polite">
+            <span>RECOMMENDED ROUTE</span>
+            <strong id="recommendation-route">CALCULATING</strong>
+            <p id="recommendation-detail">Evaluating route placement for the current conditions.</p>
+            <button id="use-recommended-route" class="inline-link" hidden>USE RECOMMENDED SETUP ↗</button>
+          </div>
           <div class="simulation-metrics">
-            <div><span>IN-FIELD MASS</span><strong><span data-metric="inside">—</span>%</strong><small>DEMO RECTANGLE</small></div>
-            <div><span>MEAN DRIFT</span><strong><span data-metric="drift">—</span> m</strong><small>DOWNWIND</small></div>
+            <div><span>IN-FIELD WET MASS</span><strong><span data-metric="inside">—</span>%</strong><small>OF APPLIED WET MASS</small></div>
+            <div><span>DRIFT P95</span><strong><span data-metric="drift">—</span> m</strong><small>LANDING DISTANCE</small></div>
             <div><span>DEPOSITION CV</span><strong><span data-metric="cv">—</span>%</strong><small>LOWER = MORE EVEN</small></div>
           </div>
-          <div class="dose-line"><span>MODEL WATER DOSE</span><b><span data-metric="doseKg">—</span> kg</b></div><div class="mass-chart"><span>MASS BY EAST–WEST POSITION</span><canvas data-chart="deposition" role="img" aria-label="Mass fraction deposited in each east west grid column"></canvas></div>
-          <p class="comparison-result" id="comparison-result" aria-live="polite"></p>
-          <button id="optimize-button" class="button primary optimize">COMPARE UPWIND SHIFT <span>↗</span></button>
-          <button id="reset-button" class="reset-button">RESET BASELINE</button>
-          <div class="lab-links"><button id="export-button" class="inline-link">Export run ↓</button><button data-research="research" class="inline-link">Spray physics ↗</button><a href="./field-route.html" class="inline-link">Skagit route case</a></div>
-          <p class="simulation-note">Free-settling teaching model · constant wind, spherical droplets, no evaporation or rotor downwash.</p>
+          <div class="dose-line"><span>MODEL WATER DOSE</span><b><span data-metric="doseKg">—</span> kg</b></div><div class="mass-chart"><span>IN-FIELD WET MASS BY EAST–WEST POSITION</span><canvas data-chart="deposition" role="img" aria-label="Relative share of in-field wet deposition by east-west position"></canvas></div>
+          <p class="simulation-note">36 × 28 m field · map scale 0–15 g/m² · wind, evaporation and rotor flow shape each landing.</p>
         </aside>
       </div>
     </section>
