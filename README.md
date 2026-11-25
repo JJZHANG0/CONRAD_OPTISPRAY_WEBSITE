@@ -15,6 +15,16 @@ npm run build
 npm run preview
 ```
 
+Open `http://127.0.0.1:5173/product-experience.html` to explore the AI Decision Assistant, weather-aware planning, drift prediction, operation replay and reports in the farmland case. The experience reuses the site aircraft, the aerial map and Poly Haven’s CC0 *Farm Field* environment. Run `npm run build` to build the site for HTTP hosting.
+
+The HDRI is *Farm Field*, photographed by Dimitrios Savva and processed by Jarod Guest, from [Poly Haven](https://polyhaven.com/a/farm_field). It is released under [CC0](https://polyhaven.com/license).
+
+## Offline review
+
+On Windows, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\package-offline.ps1` from the project root. This builds `dist/` and creates `output/product-experience-offline.zip`. Extract the ZIP and double-click `Open-Product-Experience.cmd`; it opens the preview and starts the included local server in the background only when needed. The server remains available for the current Windows session. It needs no internet, Node.js, npm, or remote backend. To run it visibly in a PowerShell window, use `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start-Offline-Review.ps1 -OpenBrowser`. Do not open the HTML directly with `file://`.
+
+Edit the source project and run the package command again to refresh the offline copy. The extracted folder also includes `OFFLINE-REVIEW-README.txt` with the run steps and data limitations.
+
 Deploy the contents of `dist/` to static hosting. Relative Vite paths support subdirectories. Open through HTTP, not `file://`. No backend, tracking, remote fonts or account is required. The partnership form only downloads a local text brief; it does not send anything. A public contact address was not provided.
 
 ## Preserved and enhanced
@@ -45,6 +55,9 @@ The Brief's stationary-nozzle fits, route comparison and numerical verification 
 - `src/physics.js`, `src/mission.js`: deterministic teaching calculation and shared route geometry.
 - `src/science-view.js`: calculated 3D trajectories, mass texture and accessible chart summaries.
 - `src/scene.js`, `src/drone.js`, `src/environment.js`, `src/effects.js`: retained and enhanced 3D assets, camera sequence and rendering.
+- `product-experience.html`, `src/product-experience.js`, `src/product-experience.css`: product introduction, eight hardware demonstrations, droplet flight and the three-minute and 90-second product tours.
+- `src/product-intelligence.js`, `src/product-dashboard.js`: interactive route and drift views, guided operation, shared map and 3D replay, and access to the AeroGuard workspace.
+- `src/platform-demonstration.js`, `public/product-demo/`: workflow overview and focused before-, during- and after-operation views using AeroGuard and Field Route screenshots.
 - `src/research.js`: source-derived evidence, equations, team and partnership content.
 - `tests/physics.test.js`: physical invariants, direction symmetry, convergence, dose scaling, conservation and route geometry.
 

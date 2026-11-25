@@ -1,25 +1,5 @@
-@import '@fontsource/space-grotesk/latin-400.css';
-@import '@fontsource/space-grotesk/latin-500.css';
-@import '@fontsource/space-grotesk/latin-600.css';
-@import '@fontsource/space-grotesk/latin-700.css';
-@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import './brand.css';
 
-:root {
-  --graphite-950: oklch(0.13 0.015 175);
-  --graphite-900: oklch(0.17 0.018 175);
-  --titanium-300: oklch(0.78 0.015 175);
-  --silver-100: oklch(0.94 0.012 155);
-  --cyan-400: oklch(0.83 0.14 174);
-  --green-500: oklch(0.64 0.11 155);
-  --orange-400: oklch(0.75 0.15 55);
-  --ink: var(--silver-100);
-  --muted: oklch(0.7 0.02 175);
-  --line: oklch(0.75 0.035 175 / 0.2);
-  --panel: oklch(0.15 0.018 175 / 0.82);
-  --accent: var(--cyan-400);
-  --font-display: 'Space Grotesk', 'Noto Sans SC', sans-serif;
-  --font-mono: 'IBM Plex Mono', 'Noto Sans SC', monospace;
-}
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--graphite-950); }
@@ -79,6 +59,7 @@ h1 strong, h2 strong { display: inline-block; font-weight: 600; color: var(--acc
 .lede.small { max-width: 400px; font-size: 14px; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
 .button { min-height: 50px; padding: 0 20px; border: 1px solid var(--line); border-radius: 2px; display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; background: oklch(0.16 0.02 175 / 0.55); color: var(--ink); font: 10px var(--font-mono); letter-spacing: 0.1em; transition: transform 180ms ease-out, background 180ms ease-out, border-color 180ms ease-out; }
+.cta-row > a { text-decoration: none; }
 .button span { font-size: 16px; line-height: 1; }
 .button:hover { transform: translateY(-2px); border-color: oklch(0.83 0.14 174 / 0.6); }
 .button:active { transform: translateY(0); }

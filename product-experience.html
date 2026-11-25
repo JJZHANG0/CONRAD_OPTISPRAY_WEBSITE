@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101814">
+    <meta name="description" content="OptiSpray brings AI-assisted spray planning, drift prediction and operation intelligence to agricultural drones.">
+    <title>Product Experience · OptiSpray</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#chapter-navigation">Skip to product chapters</a>
+
+    <main class="experience" id="experience" aria-label="OptiSpray product experience">
+      <div id="scene-container" aria-hidden="true"><div class="part-marker" id="part-marker" hidden></div></div>
+      <div class="scene-shade" aria-hidden="true"></div>
+
+      <section class="platform-demo" id="platform-demo" aria-label="AeroGuard workflow" hidden></section>
+      <section class="intelligence-workspace" id="intelligence-workspace" aria-label="Farmland decision workspace" hidden></section>
+      <iframe class="dashboard-workspace" id="dashboard-workspace" title="AeroGuard operations dashboard" hidden></iframe>
+
+      <aside class="operation-inset" id="operation-inset" aria-label="Farmland operation replay" hidden>
+        <header><h2>Operation replay</h2><span>Plan A · North–south</span></header>
+        <canvas id="operation-map" role="img" aria-label="Farmland route, aircraft position and accumulated deposition"></canvas>
+        <footer><span id="operation-segment"></span><strong id="operation-state"></strong></footer>
+      </aside>
+
+      <aside class="sensor-readout" id="sensor-readout" hidden>
+        <span id="sensor-reading-label"></span>
+        <strong id="sensor-reading-value"></strong>
+        <small id="sensor-reading-note"></small>
+      </aside>
+
+      <header class="topbar">
+        <span class="brand">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>OptiSpray</span>
+        </span>
+        <div class="case-pill">FARMLAND CASE</div>
+        <div class="header-actions">
+          <select id="tour-select" aria-label="Play product tour">
+            <option value="">Tour</option>
+            <option value="full">Full · 3 min</option>
+            <option value="short">Short · 90 sec</option>
+          </select>
+          <button class="chapter-menu-toggle" id="chapter-menu-toggle" type="button" aria-controls="chapter-navigation" aria-expanded="false">Chapters</button>
+          <button class="mode-toggle" id="presentation-toggle" type="button" aria-pressed="false">Presentation</button>
+          <button class="fullscreen-button" id="fullscreen-toggle" type="button" aria-label="Enter full screen" title="Enter full screen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <header class="chapter-summary">
+        <h1 id="chapter-title" tabindex="-1">Smarter spraying. Clearer decisions.</h1>
+        <p id="chapter-copy">AI-assisted spray planning, drift prediction and operation intelligence for agricultural drones.</p>
+        <button class="workspace-button" id="workspace-back" type="button" hidden>Back to product experience</button>
+      </header>
+      <div class="chapter-details" id="chapter-content" hidden></div>
+
+      <aside class="chapter-sidebar">
+        <nav class="chapter-dock" id="chapter-navigation" aria-label="Product experience chapters">
+          <div class="chapter-list">
+            <details class="chapter-group" open>
+              <summary>Overview</summary>
+              <button type="button" class="chapter-button active" data-chapter="overview" aria-current="page">Product introduction</button>
+              <button type="button" class="chapter-button" data-chapter="advantages">Core advantages</button>
+            </details>
+            <details class="chapter-group">
+              <summary>Intelligence</summary>
+              <button type="button" class="chapter-button" data-chapter="assistant">AI Decision Assistant</button>
+              <button type="button" class="chapter-button" data-chapter="drift">Drift risk prediction</button>
+              <button type="button" class="chapter-button" data-chapter="planning">Smart route planning</button>
+              <button type="button" class="chapter-button" data-chapter="feedback">Real-time feedback</button>
+              <button type="button" class="chapter-button" data-chapter="guided">Guided operation</button>
+            </details>
+            <details class="chapter-group">
+              <summary>Hardware</summary>
+              <button type="button" class="chapter-button" data-chapter="wind">Wind sensor</button>
+              <button type="button" class="chapter-button" data-chapter="climate">Temperature &amp; humidity</button>
+              <button type="button" class="chapter-button" data-chapter="light">Light sensing</button>
+              <button type="button" class="chapter-button" data-chapter="position">GPS positioning</button>
+              <button type="button" class="chapter-button" data-chapter="control">Pump &amp; controller</button>
+              <button type="button" class="chapter-button" data-chapter="flow">Flow sensing</button>
+              <button type="button" class="chapter-button" data-chapter="pressure">Pressure &amp; valves</button>
+              <button type="button" class="chapter-button" data-chapter="nozzle">Nozzles</button>
+            </details>
+            <details class="chapter-group">
+              <summary>Operations</summary>
+              <button type="button" class="chapter-button" data-chapter="workflow">Workflow overview</button>
+              <button type="button" class="chapter-button" data-chapter="before">Before operation</button>
+              <button type="button" class="chapter-button" data-chapter="during">During operation</button>
+              <button type="button" class="chapter-button" data-chapter="after">After operation</button>
+            </details>
+            <details class="chapter-group">
+              <summary>Why OptiSpray</summary>
+              <button type="button" class="chapter-button" data-chapter="comparison">Product comparison</button>
+              <button type="button" class="chapter-button" data-chapter="modular">Modular integration</button>
+              <button type="button" class="chapter-button" data-chapter="accessibility">Accessibility</button>
+              <button type="button" class="chapter-button" data-chapter="pricing">Pricing &amp; services</button>
+            </details>
+          </div>
+        </nav>
+      </aside>
+
+      <div class="drift-key" id="drift-key" hidden>
+        <span>Downwind travel</span> <strong id="drift-distance"></strong>
+        <span id="drift-wind"></span>
+      </div>
+
+      <section class="deposition-key" id="deposition-key" aria-label="Liquid deposition scale" hidden>
+        <span>Liquid deposition</span>
+        <div class="deposition-ramp" id="deposition-ramp"></div>
+        <div class="deposition-range"><span>0</span><span id="deposition-max"></span></div>
+      </section>
+
+      <div class="chapter-playback" id="chapter-playback">
+        <div class="playback-copy"><strong id="playback-label"></strong><span id="playback-note"></span></div>
+        <button class="workspace-button" id="playback-toggle" type="button" hidden>Pause</button>
+        <progress id="playback-progress" max="1" value="0" aria-label="Chapter playback progress"></progress>
+      </div>
+
+      <div class="fallback" id="fallback" hidden>
+        <img src="./skagit/spray-closeup.png" alt="OptiSpray aircraft above a crop field">
+        <div><span>FIELD SCENE UNAVAILABLE</span><p>Open this page in an up-to-date browser with hardware acceleration enabled.</p></div>
+      </div>
+    </main>
+
+    <script type="module" src="./src/product-experience.js"></script>
+  </body>
+</html>

@@ -144,6 +144,7 @@ function createWindSensor(materials) {
   const group = new THREE.Group();
   group.add(mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.18, 20), materials.dark, [0, 0.08, 0]));
   group.add(mesh(new THREE.CylinderGeometry(0.025, 0.035, 0.48, 10), materials.titanium, [0, 0.39, 0]));
+  const heads = [];
   const spinner = new THREE.Group();
   spinner.position.y = 0.62;
   for (const side of [-1,1]) for (const axis of [0,1]) {
@@ -151,8 +152,10 @@ function createWindSensor(materials) {
     spinner.add(beamBetween([x,-0.25,z],[x,0.08,z],0.016,materials.titanium));
     const head=mesh(new THREE.CylinderGeometry(0.055,0.055,0.08,12),materials.dark,[x,0.08,z]);
     head.rotation.z=axis===0?Math.PI/2:0;head.rotation.x=axis===1?Math.PI/2:0;spinner.add(head);
+    heads.push(new THREE.Vector3(x, spinner.position.y + head.position.y, z));
     spinner.add(beamBetween([0,-0.25,0],[x,-0.25,z],0.018,materials.titanium));
   }
+  group.userData.heads = heads;
   group.add(spinner);
   return { group, spinner };
 }
@@ -202,14 +205,97 @@ function createBoom(materials) {
 
 function createNozzles(materials) {
   const group = new THREE.Group();
+  const outlets = [];
+  const tipHeight = 0.15;
+  const tipCenter = -0.2;
   for (let i = 0; i < 7; i += 1) {
     const x = (i - 3) * 1.05;
     group.add(mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.28, 12), materials.dark, [x, 0, 0]));
-    group.add(mesh(new THREE.CylinderGeometry(0.025, 0.06, 0.15, 12), materials.orange, [x, -0.2, 0]));
+    group.add(mesh(new THREE.CylinderGeometry(0.025, 0.06, tipHeight, 12), materials.orange, [x, tipCenter, 0]));
+    outlets.push(new THREE.Vector3(x, tipCenter - tipHeight / 2, 0));
     const collar = mesh(new THREE.TorusGeometry(0.085, 0.018, 6, 16), materials.titanium, [x, 0.11, 0]);
     collar.rotation.x = Math.PI / 2;
     group.add(collar);
   }
+  group.userData.outlets = outlets;
+  return group;
+}
+
+function createClimateSensor(materials) {
+  const group = new THREE.Group();
+  group.add(mesh(new RoundedBoxGeometry(0.48, 0.12, 0.46, 3, 0.04), materials.carbon, [0, -0.08, 0]));
+  group.add(mesh(new RoundedBoxGeometry(0.4, 0.3, 0.34, 4, 0.055), materials.dark, [0, 0.12, 0]));
+  group.add(mesh(new RoundedBoxGeometry(0.34, 0.075, 0.3, 3, 0.025), materials.titanium, [0, 0.3, 0]));
+  for (let i = 0; i < 4; i += 1) {
+    group.add(mesh(new THREE.BoxGeometry(0.018, 0.14, 0.2), materials.rubber, [-0.205, 0.12, -0.105 + i * 0.07]));
+  }
+  group.add(mesh(new THREE.SphereGeometry(0.045, 12, 8), materials.cyan, [0.12, 0.12, 0.185]));
+  group.add(mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.16, 10), materials.titanium, [0, -0.17, 0]));
+  return group;
+}
+
+function createLightSensor(materials) {
+  const group = new THREE.Group();
+  group.add(mesh(new RoundedBoxGeometry(0.5, 0.09, 0.44, 3, 0.035), materials.carbon, [0, -0.12, 0]));
+  group.add(mesh(new THREE.CylinderGeometry(0.16, 0.19, 0.16, 20), materials.dark, [0, 0, 0]));
+  group.add(mesh(new THREE.CylinderGeometry(0.105, 0.13, 0.035, 20), materials.glass, [0, 0.095, 0]));
+  group.add(mesh(new THREE.CircleGeometry(0.072, 24), materials.cyan, [0, 0.116, 0]));
+  group.add(mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.16, 10), materials.titanium, [0.16, -0.12, 0]));
+  return group;
+}
+
+function createGpsReceiver(materials) {
+  const group = new THREE.Group();
+  group.add(mesh(new RoundedBoxGeometry(0.62, 0.09, 0.5, 3, 0.04), materials.carbon));
+  group.add(mesh(new RoundedBoxGeometry(0.4, 0.11, 0.3, 3, 0.04), materials.titanium, [0, 0.09, 0]));
+  group.add(mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.095, 24), materials.dark, [0, 0.18, 0]));
+  group.add(mesh(new THREE.CylinderGeometry(0.145, 0.16, 0.035, 24), materials.tank, [0, 0.245, 0]));
+  group.add(mesh(new THREE.SphereGeometry(0.035, 10, 8), materials.cyan, [0.23, 0.14, 0.08]));
+  for (const x of [-0.23, 0.23]) group.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.1, 8), materials.titanium, [x, -0.07, 0]));
+  return group;
+}
+
+function createPump(materials) {
+  const group = new THREE.Group();
+  group.add(mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.56, 18), materials.dark));
+  group.children[0].rotation.z = Math.PI / 2;
+  group.add(mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.16, 18), materials.titanium, [-0.28, 0, 0]));
+  group.children[1].rotation.z = Math.PI / 2;
+  group.add(mesh(new RoundedBoxGeometry(0.32, 0.3, 0.28, 3, 0.045), materials.carbon, [0.18, 0.2, 0]));
+  group.add(beamBetween([-0.48, 0, 0], [-0.68, 0, 0], 0.075, materials.titanium));
+  group.add(beamBetween([0.08, 0, 0], [0.34, 0, 0], 0.07, materials.titanium));
+  group.add(mesh(new THREE.SphereGeometry(0.045, 10, 8), materials.cyan, [0.18, 0.2, 0.15]));
+  return group;
+}
+
+function createFlowSensor(materials) {
+  const group = new THREE.Group();
+  group.add(beamBetween([-0.62, 0, 0], [0.62, 0, 0], 0.075, materials.titanium));
+  group.add(mesh(new RoundedBoxGeometry(0.52, 0.35, 0.42, 4, 0.07), materials.dark));
+  group.add(mesh(new RoundedBoxGeometry(0.27, 0.08, 0.24, 3, 0.025), materials.tank, [0, 0.2, 0]));
+  group.add(mesh(new THREE.SphereGeometry(0.04, 10, 8), materials.cyan, [0.15, 0.19, 0.22]));
+  for (const x of [-0.42, 0.42]) group.add(mesh(new THREE.TorusGeometry(0.09, 0.018, 6, 16), materials.carbon, [x, 0, 0]));
+  return group;
+}
+
+function createPressureSensor(materials) {
+  const group = new THREE.Group();
+  group.add(mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.3, 6), materials.titanium, [0, -0.04, 0]));
+  group.add(mesh(new RoundedBoxGeometry(0.4, 0.3, 0.34, 4, 0.05), materials.dark, [0, 0.2, 0]));
+  group.add(mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.04, 20), materials.glass, [0, 0.37, 0]));
+  group.add(mesh(new THREE.CircleGeometry(0.074, 20), materials.cyan, [0, 0.392, 0]));
+  group.add(mesh(new THREE.SphereGeometry(0.035, 10, 8), materials.orange, [0.17, 0.2, 0.18]));
+  return group;
+}
+
+function createValve(materials) {
+  const group = new THREE.Group();
+  group.add(mesh(new RoundedBoxGeometry(0.52, 0.28, 0.38, 4, 0.055), materials.dark));
+  group.add(beamBetween([-0.48, 0, 0], [-0.68, 0, 0], 0.075, materials.titanium));
+  group.add(beamBetween([0.48, 0, 0], [0.68, 0, 0], 0.075, materials.titanium));
+  group.add(mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.38, 16), materials.carbon, [0, 0.31, 0]));
+  group.add(mesh(new RoundedBoxGeometry(0.28, 0.09, 0.26, 3, 0.025), materials.titanium, [0, 0.55, 0]));
+  group.add(mesh(new THREE.SphereGeometry(0.04, 10, 8), materials.orange, [0.18, 0.5, 0.08]));
   return group;
 }
 
@@ -245,16 +331,29 @@ export function createDrone() {
   const tank = createTank(materials);
   const boom = createBoom(materials);
   const nozzle = createNozzles(materials);
-  const parts = { sensor: sensor.group, control, boom, nozzle, tank, interface: dataInterface };
+  const climate = createClimateSensor(materials);
+  const light = createLightSensor(materials);
+  const position = createGpsReceiver(materials);
+  const pump = createPump(materials);
+  const flow = createFlowSensor(materials);
+  const pressure = createPressureSensor(materials);
+  const valve = createValve(materials);
+  const parts = { sensor: sensor.group, control, boom, nozzle, tank, interface: dataInterface, climate, light, position, pump, flow, pressure, valve };
 
   const bases = {
     sensor: [0, 0.56, 0], control: [1.18, 0.02, 0.08], interface: [-1.18, 0.02, 0.08],
     tank: [0, -0.74, 0], boom: [0, -1.25, 0.12], nozzle: [0, -1.43, 0.12],
+    climate: [-0.72, 0.58, 0.08], light: [0.72, 0.58, 0.08], position: [0, 0.58, -0.62],
+    pump: [0.56, -0.78, 0.15], flow: [-0.48, -1.03, 0.1], pressure: [0.48, -1.03, 0.1], valve: [1.1, -1.1, 0.12],
   };
   const offsets = {
     sensor: [0, 1.7, 0], control: [1.5, 0.65, 0], interface: [-1.5, 0.65, 0],
     tank: [0, -1.1, 0], boom: [0, 0.25, 1.45], nozzle: [0, -0.55, 1.45],
+    climate: [-1.15, 1.05, 0.15], light: [1.15, 1.05, 0.15], position: [0, 1.35, -1.25],
+    pump: [1.4, -0.9, 0.55], flow: [-1.5, -0.95, 0.6], pressure: [1.5, -0.95, 0.6], valve: [1.75, -0.45, 0.75],
   };
+
+  for (const id of ['climate', 'light', 'position', 'pump', 'flow', 'pressure', 'valve']) parts[id].visible = false;
 
   Object.entries(parts).forEach(([id, part]) => {
     part.position.set(...bases[id]);
@@ -281,6 +380,7 @@ export function createDrone() {
   });
 
   let selected = null;
+  const selectionTint = new THREE.Color(0x35dcb9);
   function setSelected(id) {
     if (selected && parts[selected]) {
       parts[selected].traverse((object) => {
@@ -294,22 +394,23 @@ export function createDrone() {
     if (selected && parts[selected]) {
       parts[selected].traverse((object) => {
         if (!object.isMesh || !object.material.emissive) return;
-        object.material.emissive.setHex(0x35dcb9);
-        object.material.emissiveIntensity = 0.42;
+        object.material.emissive.copy(object.userData.baseEmissive).lerp(selectionTint, 0.08);
+        object.material.emissiveIntensity = object.userData.baseEmissiveIntensity;
       });
       parts[selected].scale.setScalar(1.035);
     }
   }
 
-  function setExplode(amount) {
+  function setExplode(amount, componentAmounts) {
     const linkPositions = linksGeometry.attributes.position;
     Object.entries(parts).forEach(([id, part], index) => {
-      part.position.copy(part.userData.base).addScaledVector(part.userData.offset, amount);
+      const separation = componentAmounts ? componentAmounts[id] : amount;
+      part.position.copy(part.userData.base).addScaledVector(part.userData.offset, separation);
       linkPositions.setXYZ(index * 2, part.userData.base.x, part.userData.base.y, part.userData.base.z);
       linkPositions.setXYZ(index * 2 + 1, part.position.x, part.position.y, part.position.z);
     });
     linkPositions.needsUpdate = true;
-    linksMaterial.opacity = amount * 0.34;
+    linksMaterial.opacity = (componentAmounts ? Math.max(...Object.values(componentAmounts)) : amount) * 0.34;
   }
 
   function update(t, phase) {
@@ -319,5 +420,5 @@ export function createDrone() {
     sensor.spinner.rotation.y = 0;
   }
 
-  return { group, parts, rotors, setExplode, setSelected, update };
+  return { group, core, parts, rotors, setExplode, setSelected, update };
 }

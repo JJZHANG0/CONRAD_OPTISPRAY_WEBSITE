@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         home: fileURLToPath(new URL('./index.html', import.meta.url)),
         fieldRoute: fileURLToPath(new URL('./field-route.html', import.meta.url)),
+        productExperience: fileURLToPath(new URL('./product-experience.html', import.meta.url)),
       },
     },
   },

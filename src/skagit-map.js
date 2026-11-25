@@ -31,7 +31,7 @@ function stroke(ctx, points, color, width, dashes = []) {
 }
 
 export function drawMap(canvas, data, image, {
-  surface, flight, segments = data.segments, selected, marks = [],
+  surface, flight, segments = data.segments, selected, marks = [], edge = [],
 } = {}) {
   const [cx, cy, cw, ch] = data.display.overview_crop_px;
   const [width, height] = frameSize(data);
@@ -51,6 +51,7 @@ export function drawMap(canvas, data, image, {
   stroke(ctx, [...ring, ring[0]], '#102219', 6);
   stroke(ctx, [...ring, ring[0]], routeColors.boundary, 3);
   ctx.restore();
+  for (const [a, b] of edge) stroke(ctx, [toCanvas(...a), toCanvas(...b)], '#ffbe77', 6);
   for (const s of segments) {
     const a = toCanvas(...s.start_enu_m);
     const b = toCanvas(...s.end_enu_m);
